@@ -23,3 +23,23 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
+
+class Encuesta(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(100),nullable = False)
+    date_created = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
+    date_posted = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
+    preguntas = db.relationship('Pregunta', backref = 'content', lazy = True)
+
+class Pregunta(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(100), nullable = False)
+    encuesta_id = db.Column(db.Integer, db.ForeignKey('encuesta.id'), nullable = False)
+    items = db.relationship('Item', backref = 'options', lazy = True)
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    description = db.Column(db.String(1000), nullable = False)
+    pregunta_id = db.Column(db.Integer, db.ForeignKey('pregunta.id'), nullable = False)
+    

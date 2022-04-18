@@ -1,3 +1,4 @@
+from turtle import title
 from flask import render_template, url_for, flash, redirect
 from encuestas import app
 from encuestas.forms import RegistrationForm, LoginForm
@@ -29,6 +30,10 @@ def home():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
+
+@app.route("/crear_encuesta")
+def crear_encuesta():
+    return render_template('crear_encuesta.html', title= 'Crear Encuesta')
 
 
 @app.route("/register", methods=['GET', 'POST'])

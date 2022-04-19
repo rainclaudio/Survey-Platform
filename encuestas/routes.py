@@ -1,8 +1,9 @@
 from turtle import title
 from flask import render_template, url_for, flash, redirect
-from encuestas import app
-from encuestas.forms import RegistrationForm, LoginForm
-from encuestas.models import User, Post
+from datetime import datetime
+from encuestas import app,db
+from encuestas.forms import CrearEncuestaForm, CrearPreguntaForm, RegistrationForm, LoginForm
+from encuestas.models import Encuesta, User, Post
 
 
 posts = [
@@ -24,16 +25,29 @@ posts = [
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', posts=posts)
+    encuestas = Encuesta.query.all()
+    return render_template('home.html', posts=posts, encuestas = encuestas)
 
 
 @app.route("/about")
 def about():
     return render_template('about.html', title='About')
 
-@app.route("/crear_encuesta")
+
+@app.route("/crear_encuesta", methods=['GET', 'POST'])
 def crear_encuesta():
-    return render_template('crear_encuesta.html', title= 'Crear Encuesta')
+    encuesta_form = CrearEncuestaForm()
+    counter = 1
+    if encuesta_form.validate_on_submit():
+            encuesta = Encuesta(title = encuesta_form.title.data, user_id = 'claudio' )
+            db.session.add(encuesta)
+            preguntas_form = []
+            db.session.commit()
+            flash(f'Encuesta {encuesta_form.title.data} creada! {encuesta.id} y el counter es {counter}', 'success ')
+            counter = counter + 1
+    return render_template('crear_encuesta.html', title= 'Crear Encuesta',encuesta_form = encuesta_form)
+
+
 
 
 @app.route("/register", methods=['GET', 'POST'])

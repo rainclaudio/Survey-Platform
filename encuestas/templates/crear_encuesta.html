@@ -1,3 +1,26 @@
 {% extends "layout.html" %} {% block content %}
-<h1>Crear Encuesta</h1>
+<div class="content-section">
+  <form method="POST" action="">
+    {{ encuesta_form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Creación de encuesta</legend>
+      <div class="form-group">
+        {{ encuesta_form.title.label(class="form-control-label") }} {% if
+        encuesta_form.title.errors %} {{ encuesta_form.title(class="form-control
+        form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in encuesta_form.title.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %} {{ encuesta_form.title(class="form-control form-control-lg")
+        }} {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ encuesta_form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+
 {% endblock content %}

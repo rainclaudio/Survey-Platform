@@ -1,0 +1,26 @@
+{% extends "layout.html" %} {% block content %}
+<div class="content-section">
+  <form method="POST" action="">
+    {{ pregunta_form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Añadir Pregunta</legend>
+      <div class="form-group">
+        {{ pregunta_form.title.label(class="form-control-label") }} {% if
+        pregunta_form.title.errors %} {{ pregunta_form.title(class="form-control
+        form-control-lg is-invalid") }}
+        <div class="invalid-feedback">
+          {% for error in pregunta_form.title.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %} {{ pregunta_form.title(class="form-control form-control-lg")
+        }} {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ pregunta_form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

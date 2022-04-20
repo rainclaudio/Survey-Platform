@@ -24,13 +24,16 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Login')
 
 
-class CrearItem(FlaskForm):
+class CrearItemForm(FlaskForm):
     description = StringField('Descripcion', validators=[DataRequired(), Length(min=1,max=100)])
+    submit = SubmitField('Añadir Item')
+
 
 class CrearPreguntaForm(FlaskForm):
     title = StringField('Titulo', validators = [DataRequired(),Length(min=2,max=100)])
+    submit = SubmitField('Añadir Pregunta')
 
 
 class CrearEncuestaForm(FlaskForm):
     title = StringField('Titulo', validators = [DataRequired(), Length(min=2, max = 100)])
-    submit = SubmitField('Guardar')
+    submit = SubmitField('Guardar Título')

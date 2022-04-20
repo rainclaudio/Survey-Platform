@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block content %}
+<div class="content-section">
+  <form method="POST" action="">
+    {{ item_form.hidden_tag() }}
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">
+        Añadir Item para "{{pregunta.title}}"
+      </legend>
+      <div class="form-group">
+        {{ item_form.description.label(class="form-control-label") }} {% if
+        item_form.description.errors %} {{
+        item_form.description(class="form-control form-control-lg is-invalid")
+        }}
+        <div class="invalid-feedback">
+          {% for error in item_form.description.errors %}
+          <span>{{ error }}</span>
+          {% endfor %}
+        </div>
+        {% else %} {{ item_form.description(class="form-control
+        form-control-lg", autocomplete="off") }} {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+      {{ item_form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+
+{% endblock content %}

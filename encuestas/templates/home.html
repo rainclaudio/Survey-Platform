@@ -2,11 +2,18 @@
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
-      <small class="text-muted"
-        >{{ encuesta.date_created.strftime('%d-%m-%Y') }}</small
+      <small class="text-muted">
+        created at: {{ encuesta.date_created.strftime('%d-%m-%Y %H:%M')
+        }}</small
       >
     </div>
-    <h2><a class="article-title" href="#">{{ encuesta.title }}</a></h2>
+    <h2>
+      <a
+        class="article-title"
+        href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}"
+        >{{ encuesta.title }}</a
+      >
+    </h2>
   </div>
 </article>
 {% endfor %} {% endblock content %}

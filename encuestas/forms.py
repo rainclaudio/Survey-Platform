@@ -1,3 +1,5 @@
+from operator import length_hint
+from wsgiref.validate import validator
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
@@ -20,3 +22,18 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+
+class CrearItemForm(FlaskForm):
+    description = StringField('Descripcion', validators=[DataRequired(), Length(min=1,max=100)])
+    submit = SubmitField('Añadir Item')
+
+
+class CrearPreguntaForm(FlaskForm):
+    title = StringField('Titulo', validators = [DataRequired(),Length(min=2,max=100)])
+    submit = SubmitField('Añadir Pregunta')
+
+
+class CrearEncuestaForm(FlaskForm):
+    title = StringField('Titulo', validators = [DataRequired(), Length(min=2, max = 100)])
+    submit = SubmitField('Guardar Título')

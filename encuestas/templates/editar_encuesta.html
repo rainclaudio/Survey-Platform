@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block content %}
+<!-- Título -->
+<h2 class="border-bottom mb-4">{{ encuesta.title}}</h2>
+
+<!-- Preguntas -->
+{%for pregunta in preguntas%}
+<div class="content-section ml-4">
+  <fieldset class="form-group mb-0">
+    <legend class="border-bottom">{{pregunta.title}}</legend>
+  </fieldset>
+  <ul>
+    {%for item in items%} {%if pregunta.id == item.pregunta_id%}
+    <li>{{item.description}}</li>
+    {%endif%} {%endfor%}
+  </ul>
+  <a
+    class="d-block p-1 bg-info text-white text-center w-25"
+    href="{{ url_for('add_item',encuesta_id = encuesta.id, pregunta_id=pregunta.id) }}"
+    >Añadir Item</a
+  >
+</div>
+{%endfor%}
+
+<a
+  class="d-block ml-4 p-2 bg-primary text-white text-center"
+  href="{{ url_for('add_pregunta', encuesta_id=encuesta.id) }}"
+  >Añadir Pregunta</a
+>
+{% endblock content %}

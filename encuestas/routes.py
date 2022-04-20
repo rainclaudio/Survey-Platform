@@ -1,7 +1,7 @@
 from turtle import title
 from flask import render_template, url_for, flash, redirect
-from datetime import datetime # se esta usando datetime?
-from encuestas import app,db # se esta usando db?
+from datetime import datetime
+from encuestas import app,db
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm
 from encuestas.models import Encuesta, Item, User, Post, Pregunta
 

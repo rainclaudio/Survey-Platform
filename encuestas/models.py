@@ -1,6 +1,6 @@
 from datetime import datetime
 from encuestas import db
-
+# este es un comentario
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -119,3 +119,9 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/post/<int:encuesta_id>/delete", methods=['POST'])
+def delete_encuesta(encuesta_id):
+    flash('Your post has been deleted!', 'success')
+    return redirect(url_for('home'))

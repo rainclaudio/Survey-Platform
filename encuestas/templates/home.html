@@ -2,11 +2,22 @@
 <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
+            {%if encuesta.estado == "publicada"%}
+            <form action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Cerrar encuesta # {{ encuesta.id }}">
+            </form>
+            {%endif%}
+            {%if encuesta.estado == "cerrada"%}
+            <form action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
+                <input class="btn btn-success" type="submit" value="Publicar encuesta # {{ encuesta.id }}">
+            </form>
+            {%endif%}
             <small class="text-muted">
-                created at: {{ encuesta.date_created.strftime('%d-%m-%Y %H:%M')
-                }}
+                created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
             </small>
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Cerrar encuesta</button>
+            <small class="text-muted">
+                estado: {{encuesta.estado}}
+            </small>
         </div>
         <h2>
             <a class="article-title"
@@ -14,23 +25,15 @@
         </h2>
     </div>
 </article>
-<!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabel">Desea cerrar la encuesta?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form action="{{ url_for('delete_encuesta', encuesta_id=encuesta.id) }}" method="POST">
-                    <input class="btn btn-danger" type="submit" value="Confirmar">
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 {% endfor %} {% endblock content %}
+
+
+
+
+
+
+
+
+
+
+

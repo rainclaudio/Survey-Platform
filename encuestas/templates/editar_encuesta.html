@@ -1,29 +1,56 @@
 {% extends "layout.html" %} {% block content %}
 <!-- Título -->
-<h2 class="border-bottom mb-4">{{ encuesta.title}}</h2>
+<h2 class="border-bottom mb-2">{{ encuesta.title}}</h2>
+
+{%if encuesta.estado == "publicada"%}
+<button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Cerrar encuesta # {{ encuesta.id }}</button>
+{%endif%}
+
+{%if encuesta.estado == "cerrada" or encuesta.estado == "creada"%}
+<form action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
+    <input class="btn btn-success" type="submit" value="Publicar encuesta # {{ encuesta.id }}">
+</form>
+{%endif%}
+
 
 <!-- Preguntas -->
 {%for pregunta in preguntas%}
 <div class="content-section ml-4">
-  <fieldset class="form-group mb-0">
-    <legend class="border-bottom">{{pregunta.title}}</legend>
-  </fieldset>
-  <ul>
-    {%for item in items%} {%if pregunta.id == item.pregunta_id%}
-    <li>{{item.description}}</li>
-    {%endif%} {%endfor%}
-  </ul>
-  <a
-    class="d-block p-1 bg-info text-white text-center w-25"
-    href="{{ url_for('add_item',encuesta_id = encuesta.id, pregunta_id=pregunta.id) }}"
-    >Añadir Item</a
-  >
+    <fieldset class="form-group mb-0">
+        <legend class="border-bottom">{{pregunta.title}}</legend>
+    </fieldset>
+    <ul>
+        {%for item in items%} {%if pregunta.id == item.pregunta_id%}
+        <li>{{item.description}}</li>
+        {%endif%} {%endfor%}
+    </ul>
+    <a class="d-block p-1 bg-info text-white text-center w-25"
+       href="{{ url_for('add_item',encuesta_id = encuesta.id, pregunta_id=pregunta.id) }}">Añadir Item</a>
 </div>
 {%endfor%}
 
-<a
-  class="d-block ml-4 p-2 bg-primary text-white text-center"
-  href="{{ url_for('add_pregunta', encuesta_id=encuesta.id) }}"
-  >Añadir Pregunta</a
->
+<a class="d-block ml-4 p-2 bg-primary text-white text-center"
+   href="{{ url_for('add_pregunta', encuesta_id=encuesta.id) }}">Añadir Pregunta</a>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Desea cerrar la encuesta # {{ encuesta.id }}?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <form action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
+                    <input class="btn btn-danger" type="submit" value="Confirmar">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}

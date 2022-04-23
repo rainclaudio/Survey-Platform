@@ -55,8 +55,31 @@ def editar_encuesta(encuesta_id):
         id_preguntas.append(preg.id)
     print(id_preguntas)
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+    items_preguntas = []
+    counter = 0
     for item in items:
         print(item.description)
+
+    for preg in preguntas:
+        for item in items:
+            if preg.id == item.pregunta_id:
+                counter+= 1
+        items_preguntas.append(counter)
+        counter = 0
+
+    print(items_preguntas)
+
+    total_pregs = len(id_preguntas)
+    bool_items = 1
+
+    if len(items_preguntas) == 0:
+        bool_items = 0
+
+    for n in items_preguntas:
+        if n <= 1:
+            bool_items = 0
+
+
     encuesta_form = CrearEncuestaForm()
     pregunta_form = CrearPreguntaForm()
     return render_template('editar_encuesta.html', 
@@ -66,6 +89,8 @@ def editar_encuesta(encuesta_id):
         items = items,
         encuesta_form = encuesta_form,
         pregunta_form = pregunta_form,
+        total_pregs = total_pregs,
+        bool_items = bool_items
     )
         
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta", methods=['GET', 'POST'])
@@ -119,3 +144,28 @@ def login():
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/post/<int:encuesta_id>/cerrar", methods=['POST'])
+def cerrar_encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    encuesta.estado = "cerrada"
+    db.session.commit()
+    flash('Your post #' + str(encuesta_id) + ' has been closed!', 'success')
+    return redirect(url_for('home'))
+
+
+@app.route("/post/<int:encuesta_id>/<int:total_pregs>/<int:bool_items>/publicar", methods=['POST'])
+def publicar_encuesta(encuesta_id,total_pregs,bool_items):
+    if total_pregs == 0:
+        flash('Para publicar encuesta se necesita minimo una pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    if bool_items == 0:
+        flash('Para publicar encuesta se necesita minimo dos items por pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    else:
+        encuesta = Encuesta.query.get_or_404(encuesta_id)
+        encuesta.estado = "publicada"
+        db.session.commit()
+        flash('Your post #' + str(encuesta_id) + ' has been posted!', 'success')
+        return redirect(url_for('home'))

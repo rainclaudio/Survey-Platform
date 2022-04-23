@@ -69,16 +69,15 @@ def editar_encuesta(encuesta_id):
 
     print(items_preguntas)
 
-    publ = 1
+    total_pregs = len(id_preguntas)
+    bool_items = 1
 
     if len(items_preguntas) == 0:
-        publ = 0
+        bool_items = 0
 
     for n in items_preguntas:
         if n <= 1:
-            publ = 0
-
-    print(publ)
+            bool_items = 0
 
 
     encuesta_form = CrearEncuestaForm()
@@ -89,7 +88,9 @@ def editar_encuesta(encuesta_id):
         preguntas = preguntas,
         items = items,
         encuesta_form = encuesta_form,
-        pregunta_form = pregunta_form
+        pregunta_form = pregunta_form,
+        total_pregs = total_pregs,
+        bool_items = bool_items
     )
         
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta", methods=['GET', 'POST'])
@@ -154,13 +155,17 @@ def cerrar_encuesta(encuesta_id):
     return redirect(url_for('home'))
 
 
-@app.route("/post/<int:encuesta_id>/publicar", methods=['POST'])
-def publicar_encuesta(encuesta_id):
-    #if publ == 1:
+@app.route("/post/<int:encuesta_id>/<int:total_pregs>/<int:bool_items>/publicar", methods=['POST'])
+def publicar_encuesta(encuesta_id,total_pregs,bool_items):
+    if total_pregs == 0:
+        flash('Para publicar encuesta se necesita minimo una pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    if bool_items == 0:
+        flash('Para publicar encuesta se necesita minimo dos items por pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    else:
         encuesta = Encuesta.query.get_or_404(encuesta_id)
         encuesta.estado = "publicada"
         db.session.commit()
         flash('Your post #' + str(encuesta_id) + ' has been posted!', 'success')
         return redirect(url_for('home'))
-    #flash('Para publicar encuesta se necesita minimo una pregunta y minimo dos items por pregunta', 'danger')
-    #return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))

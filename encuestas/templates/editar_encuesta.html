@@ -7,7 +7,7 @@
 {%endif%}
 
 {%if encuesta.estado == "cerrada" or encuesta.estado == "creada"%}
-<form action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
+<form action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}" method="POST">
     <input class="btn btn-success" type="submit" value="Publicar encuesta # {{ encuesta.id }}">
 </form>
 {%endif%}

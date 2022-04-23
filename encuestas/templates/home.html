@@ -2,16 +2,6 @@
 <article class="media content-section">
     <div class="media-body">
         <div class="article-metadata">
-            {%if encuesta.estado == "publicada"%}
-            <form action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
-                <input class="btn btn-danger" type="submit" value="Cerrar encuesta # {{ encuesta.id }}">
-            </form>
-            {%endif%}
-            {%if encuesta.estado == "cerrada"%}
-            <form action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id) }}" method="POST">
-                <input class="btn btn-success" type="submit" value="Publicar encuesta # {{ encuesta.id }}">
-            </form>
-            {%endif%}
             <small class="text-muted">
                 created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
             </small>
@@ -19,13 +9,13 @@
                 estado: {{encuesta.estado}}
             </small>
         </div>
-        <h2>
-            <a class="article-title"
-               href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">{{ encuesta.title }}</a>
-        </h2>
-    </div>
-</article>
-{% endfor %} {% endblock content %}
+            <h2>
+                <a class="article-title"
+                   href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">{{ encuesta.title }}</a>
+            </h2>
+        </div>
+    </article>
+    {% endfor %} {% endblock content %}
 
 
 

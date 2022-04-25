@@ -5,7 +5,7 @@ from datetime import datetime
 from encuestas import app,db, bcrypt
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
-from flask_login import login_user, current_user,logout_user, login_required
+from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
     {
@@ -96,6 +96,13 @@ def encuesta(encuesta_id):
         if n <= 1:
             bool_items = 0
 
+    boton_editar = False
+    encuestas_propias = Encuesta.query.filter_by(user_id = current_user.username)
+    for encuestas in encuestas_propias:
+        if encuestas.id == encuesta_id:
+            boton_editar = True
+            break
+
     return render_template('encuesta.html', 
         title= 'Encuesta',
         encuesta = encuesta,
@@ -103,6 +110,7 @@ def encuesta(encuesta_id):
         items = items,
         total_pregs = total_pregs,
         bool_items = bool_items,
+        boton_editar = boton_editar,
     )
 
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
@@ -243,8 +251,9 @@ def publicar_encuesta(encuesta_id,total_pregs,bool_items):
 @app.route("/profile")
 @login_required
 def profile():
+    encuestas = Encuesta.query.filter_by(user_id = current_user.username)
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
-    return render_template('profile.html', title='Profile', image_file=image_file)
+    return render_template('profile.html', title='Profile', image_file=image_file,  encuestas = encuestas)
 
 @app.route("/logout")
 def logout():

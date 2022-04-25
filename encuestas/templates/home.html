@@ -12,7 +12,7 @@
         </div>
             <h2>
                 <a class="article-title"
-                   href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">{{ encuesta.title }}</a>
+                   href="{{ url_for('encuesta', encuesta_id=encuesta.id) }}">{{ encuesta.title }}</a>
             </h2>
             <small class="text-muted">
                 autor: {{encuesta.user_id}}

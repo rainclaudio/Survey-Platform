@@ -16,12 +16,14 @@
 </div>
 {%endfor%}
 
+{%if encuesta.estado == "publicada"%}
 <a class="btn btn-outline-info"
    href="{{ url_for('responder_encuesta', encuesta_id=encuesta.id) }}">Responder Encuesta</a>
-
-{%if 1 == 1%}
-<a class="btn btn-outline-info"
-    href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">Editar Encuesta</a>
+{%endif%}
+   
+{%if encuesta.estado != "cerrada" and boton_editar%}
+    <a class="btn btn-outline-info"
+        href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">Editar Encuesta</a>
 {%endif%}
 
 {% endblock content %}

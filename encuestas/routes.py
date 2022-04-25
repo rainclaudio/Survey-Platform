@@ -38,22 +38,30 @@ def about():
 def responder_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
-    #print('numero de la encuesta: ' + str(encuesta_id) )
+    
     selected_preguntas_id = []
     for pregunta in preguntas:
         selected_preguntas_id.append(pregunta.id)
-    #print(selected_preguntas_id)
+        
     items = Item.query.filter(Item.pregunta_id.in_(selected_preguntas_id))
-    #for item in items:
-        #print(item.description)
+    
     respuesta_form = EnviarRespuestaForm()
+
     if respuesta_form.validate_on_submit():
+        todas_respondidas = True
         for pregunta in preguntas:
-            item_id_seleccionado = request.form.get(f'{pregunta.id}')
-            respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
-            db.session.add(respuesta)
-        db.session.commit()
-        return redirect('/')
+            if str(type(request.form.get(f'{pregunta.id}'))) == "<class 'NoneType'>":
+                todas_respondidas = False
+                flash("¡Aun existen preguntas sin responder!", 'danger')
+
+        if todas_respondidas:
+            for pregunta in preguntas:
+                item_id_seleccionado = request.form.get(f'{pregunta.id}')
+                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
+                db.session.add(respuesta)
+            db.session.commit()
+            return redirect('/')
+            
     return render_template('responder_encuesta.html', 
         title = 'Responder Encuesta',
         encuesta = encuesta,

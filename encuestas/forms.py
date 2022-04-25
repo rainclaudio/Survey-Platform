@@ -47,3 +47,6 @@ class CrearPreguntaForm(FlaskForm):
 class CrearEncuestaForm(FlaskForm):
     title = StringField('Titulo', validators = [DataRequired(), Length(min=2, max = 100)])
     submit = SubmitField('Guardar Título')
+
+class EnviarRespuestaForm(FlaskForm):
+    submit = SubmitField('Enviar Respuesta')

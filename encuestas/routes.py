@@ -3,7 +3,7 @@ from turtle import title
 from flask import render_template, url_for, flash, redirect, request
 from datetime import datetime
 from encuestas import app,db, bcrypt
-from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, CrearRespuestaForm
+from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user,logout_user, login_required
 
@@ -46,7 +46,7 @@ def responder_encuesta(encuesta_id):
     items = Item.query.filter(Item.pregunta_id.in_(selected_preguntas_id))
     #for item in items:
         #print(item.description)
-    respuesta_form = CrearRespuestaForm()
+    respuesta_form = EnviarRespuestaForm()
     if respuesta_form.validate_on_submit():
         for pregunta in preguntas:
             item_id_seleccionado = request.form.get(f'{pregunta.id}')

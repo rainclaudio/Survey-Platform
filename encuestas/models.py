@@ -49,3 +49,8 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     description = db.Column(db.String(1000), nullable = False)
     pregunta_id = db.Column(db.Integer, db.ForeignKey('pregunta.id'), nullable = False)
+
+class Respuesta(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable = False)
+    pregunta_id = db.Column(db.Integer, db.ForeignKey('pregunta.id'), nullable = False)

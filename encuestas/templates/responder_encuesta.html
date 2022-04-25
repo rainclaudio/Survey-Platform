@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Título -->
+<h2 class="border-bottom mb-4">
+  Responder {{ encuesta.title}}
+</h2>
+
+<!-- Preguntas -->
+<div class="content-section ml-4">
+  <form method="POST" action="">
+    {{ respuesta_form.hidden_tag() }}
+    <div class = "form-group">
+      {%for pregunta in preguntas%}
+      <fieldset class="form-group">
+        <legend class="border-bottom">
+          {{pregunta.title}}
+        </legend>
+      </fieldset>
+        <ul>
+          {%for item in items%}
+          {%if pregunta.id == item.pregunta_id%}
+          <li style = "list-style-type: none;">
+            <input type="radio" name='{{pregunta.id}}' value = "{{item.id}}">
+              {{item.description}}
+            </input<br>
+          </li>
+          {%endif%}
+          {%endfor%}
+        </ul>
+      {%endfor%}
+      {{ respuesta_form.submit(class="btn btn-outline-info") }}
+    </div>
+  </form>
+</div>
+{% endblock content %}

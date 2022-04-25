@@ -3,8 +3,8 @@ from turtle import title
 from flask import render_template, url_for, flash, redirect, request
 from datetime import datetime
 from encuestas import app,db, bcrypt
-from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm
-from encuestas.models import Encuesta, Item, User, Post, Pregunta
+from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, CrearRespuestaForm
+from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user,logout_user, login_required
 
 posts = [
@@ -34,6 +34,33 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+@app.route("/responder_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+def responder_encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+    #print('numero de la encuesta: ' + str(encuesta_id) )
+    selected_preguntas_id = []
+    for pregunta in preguntas:
+        selected_preguntas_id.append(pregunta.id)
+    #print(selected_preguntas_id)
+    items = Item.query.filter(Item.pregunta_id.in_(selected_preguntas_id))
+    #for item in items:
+        #print(item.description)
+    respuesta_form = CrearRespuestaForm()
+    if respuesta_form.validate_on_submit():
+        for pregunta in preguntas:
+            item_id_seleccionado = request.form.get(f'{pregunta.id}')
+            respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
+            db.session.add(respuesta)
+        db.session.commit()
+        return redirect('/')
+    return render_template('responder_encuesta.html', 
+        title = 'Responder Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        respuesta_form = respuesta_form,
+    )
 
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required

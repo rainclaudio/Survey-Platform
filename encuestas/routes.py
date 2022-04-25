@@ -74,6 +74,37 @@ def crear_encuesta():
             return redirect( url_for('editar_encuesta', encuesta_id=encuesta.id))
     return render_template('crear_encuesta.html', title= 'Crear Encuesta',encuesta_form = encuesta_form)
 
+@app.route("/encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+def encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+
+    id_preguntas = []
+    for preg in preguntas:
+        id_preguntas.append(preg.id)
+
+    items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+    items_preguntas = []
+
+    total_pregs = len(id_preguntas)
+    bool_items = 1
+
+    if len(items_preguntas) == 0:
+        bool_items = 0
+
+    for n in items_preguntas:
+        if n <= 1:
+            bool_items = 0
+
+    return render_template('encuesta.html', 
+        title= 'Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        total_pregs = total_pregs,
+        bool_items = bool_items,
+    )
+
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 def editar_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)

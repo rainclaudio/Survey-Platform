@@ -7,13 +7,18 @@
             </small>
             <small class="text-muted">
                 estado: {{encuesta.estado}}
+                
             </small>
         </div>
             <h2>
                 <a class="article-title"
                    href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">{{ encuesta.title }}</a>
             </h2>
+            <small class="text-muted">
+                autor: {{encuesta.user_id}}
+            </small>
         </div>
+      
     </article>
     {% endfor %} {% endblock content %}
 

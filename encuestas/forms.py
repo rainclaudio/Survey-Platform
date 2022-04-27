@@ -1,9 +1,10 @@
 from operator import length_hint
 from wsgiref.validate import validator
+from xml.dom import ValidationErr
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
-
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from encuestas.models import User
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username',
@@ -14,6 +15,15 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+    def validate_username(self,username):
+        user = User.query.filter_by(username= username.data).first()
+        if user:
+            raise ValidationError('Este nombre de usuario ya está en uso, por favor escoga otro.')
+    def validate_email(self,email):
+        user = User.query.filter_by(email= email.data).first()
+        if user:
+            raise ValidationError('Este email ya está en uso, por favor escoga otro.')
 
 
 class LoginForm(FlaskForm):
@@ -37,3 +47,6 @@ class CrearPreguntaForm(FlaskForm):
 class CrearEncuestaForm(FlaskForm):
     title = StringField('Titulo', validators = [DataRequired(), Length(min=2, max = 100)])
     submit = SubmitField('Guardar Título')
+
+class EnviarRespuestaForm(FlaskForm):
+    submit = SubmitField('Enviar Respuesta')

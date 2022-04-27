@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block content %}
+<!-- Título -->
+<h2 class="border-bottom mb-2">{{ encuesta.title}}</h2>
+
+<!-- Preguntas -->
+{%for pregunta in preguntas%}
+<div class="content-section ml-4">
+    <fieldset class="form-group mb-0">
+        <legend class="border-bottom">{{pregunta.title}}</legend>
+    </fieldset>
+    <ul>
+        {%for item in items%} {%if pregunta.id == item.pregunta_id%}
+        <li>{{item.description}}</li>
+        {%endif%} {%endfor%}
+    </ul>
+</div>
+{%endfor%}
+
+{%if encuesta.estado == "publicada"%}
+<a class="btn btn-outline-info"
+   href="{{ url_for('responder_encuesta', encuesta_id=encuesta.id) }}">Responder Encuesta</a>
+{%endif%}
+   
+{%if encuesta.estado != "cerrada" and boton_editar%}
+    <a class="btn btn-outline-info"
+        href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">Editar Encuesta</a>
+{%endif%}
+
+{% endblock content %}

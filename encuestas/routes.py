@@ -1,10 +1,11 @@
+from fileinput import filename
 from turtle import title
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from datetime import datetime
-from encuestas import app,db
-from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm
-from encuestas.models import Encuesta, Item, User, Post, Pregunta
-
+from encuestas import app,db, bcrypt
+from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
+from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
+from flask_login import login_user, current_user, logout_user, login_required
 
 posts = [
     {
@@ -33,17 +34,92 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+@app.route("/responder_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+def responder_encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+    
+    selected_preguntas_id = []
+    for pregunta in preguntas:
+        selected_preguntas_id.append(pregunta.id)
+        
+    items = Item.query.filter(Item.pregunta_id.in_(selected_preguntas_id))
+    
+    respuesta_form = EnviarRespuestaForm()
+
+    if respuesta_form.validate_on_submit():
+        todas_respondidas = True
+        for pregunta in preguntas:
+            if str(type(request.form.get(f'{pregunta.id}'))) == "<class 'NoneType'>":
+                todas_respondidas = False
+                flash("¡Aun existen preguntas sin responder!", 'danger')
+
+        if todas_respondidas:
+            for pregunta in preguntas:
+                item_id_seleccionado = request.form.get(f'{pregunta.id}')
+                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
+                db.session.add(respuesta)
+            db.session.commit()
+            return redirect('/')
+            
+    return render_template('responder_encuesta.html', 
+        title = 'Responder Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        respuesta_form = respuesta_form,
+    )
 
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
+@login_required
 def crear_encuesta():
     encuesta_form = CrearEncuestaForm()
     if encuesta_form.validate_on_submit():
-            encuesta = Encuesta(title = encuesta_form.title.data, user_id = 'claudio' )
+            encuesta = Encuesta(title = encuesta_form.title.data, user_id = current_user.username )
             db.session.add(encuesta)
             db.session.commit()
             flash(f'Encuesta {encuesta_form.title.data} creada! {encuesta.id}', 'success ')
             return redirect( url_for('editar_encuesta', encuesta_id=encuesta.id))
     return render_template('crear_encuesta.html', title= 'Crear Encuesta',encuesta_form = encuesta_form)
+
+@app.route("/encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+def encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+
+    id_preguntas = []
+    for preg in preguntas:
+        id_preguntas.append(preg.id)
+
+    items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+    items_preguntas = []
+
+    total_pregs = len(id_preguntas)
+    bool_items = 1
+
+    if len(items_preguntas) == 0:
+        bool_items = 0
+
+    for n in items_preguntas:
+        if n <= 1:
+            bool_items = 0
+
+    boton_editar = False
+    encuestas_propias = Encuesta.query.filter_by(user_id = current_user.username)
+    for encuestas in encuestas_propias:
+        if encuestas.id == encuesta_id:
+            boton_editar = True
+            break
+
+    return render_template('encuesta.html', 
+        title= 'Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        total_pregs = total_pregs,
+        bool_items = bool_items,
+        boton_editar = boton_editar,
+    )
 
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 def editar_encuesta(encuesta_id):
@@ -55,8 +131,31 @@ def editar_encuesta(encuesta_id):
         id_preguntas.append(preg.id)
     print(id_preguntas)
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+    items_preguntas = []
+    counter = 0
     for item in items:
         print(item.description)
+
+    for preg in preguntas:
+        for item in items:
+            if preg.id == item.pregunta_id:
+                counter+= 1
+        items_preguntas.append(counter)
+        counter = 0
+
+    print(items_preguntas)
+
+    total_pregs = len(id_preguntas)
+    bool_items = 1
+
+    if len(items_preguntas) == 0:
+        bool_items = 0
+
+    for n in items_preguntas:
+        if n <= 1:
+            bool_items = 0
+
+
     encuesta_form = CrearEncuestaForm()
     pregunta_form = CrearPreguntaForm()
     return render_template('editar_encuesta.html', 
@@ -66,6 +165,8 @@ def editar_encuesta(encuesta_id):
         items = items,
         encuesta_form = encuesta_form,
         pregunta_form = pregunta_form,
+        total_pregs = total_pregs,
+        bool_items = bool_items
     )
         
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta", methods=['GET', 'POST'])
@@ -102,20 +203,68 @@ def add_item(encuesta_id,pregunta_id):
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        flash(f'Account created for {form.username.data}!', 'success')
-        return redirect(url_for('home'))
+        hash_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user = User(username =form.username.data, email=form.email.data, password =  hash_pass)
+        db.session.add(user)
+        db.session.commit()
+        flash(f'Creaste tu cuenta, bienvenid@ {form.username.data}!', 'success')
+        return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
+        user = User.query.filter_by(email = form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password,form.password.data):
+            login_user(user,remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
+            flash('No puedes entrar, vuelve a checkear la contraseña o usuario.', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+
+@app.route("/post/<int:encuesta_id>/cerrar", methods=['POST'])
+def cerrar_encuesta(encuesta_id):
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    encuesta.estado = "cerrada"
+    db.session.commit()
+    flash('Your post #' + str(encuesta_id) + ' has been closed!', 'success')
+    return redirect(url_for('home'))
+
+
+@app.route("/post/<int:encuesta_id>/<int:total_pregs>/<int:bool_items>/publicar", methods=['POST'])
+def publicar_encuesta(encuesta_id,total_pregs,bool_items):
+    if total_pregs == 0:
+        flash('Para publicar encuesta se necesita minimo una pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    if bool_items == 0:
+        flash('Para publicar encuesta se necesita minimo dos items por pregunta', 'danger')
+        return redirect( url_for('editar_encuesta', encuesta_id=encuesta_id))
+    else:
+        encuesta = Encuesta.query.get_or_404(encuesta_id)
+        encuesta.estado = "publicada"
+        db.session.commit()
+        flash('Your post #' + str(encuesta_id) + ' has been posted!', 'success')
+        return redirect(url_for('home'))
+
+@app.route("/profile")
+@login_required
+def profile():
+    encuestas = Encuesta.query.filter_by(user_id = current_user.username)
+    image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
+    return render_template('profile.html', title='Profile', image_file=image_file,  encuestas = encuestas)
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+

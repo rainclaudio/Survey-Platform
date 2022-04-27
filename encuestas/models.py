@@ -1,8 +1,13 @@
 from datetime import datetime
-from encuestas import db
-# este es un comentario
 
-class User(db.Model):
+from encuestas import db, login_manager_
+from flask_login import UserMixin
+
+@login_manager_.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -33,7 +38,7 @@ class Encuesta(db.Model):
     date_posted = db.Column(db.DateTime, default = datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     preguntas = db.relationship('Pregunta', backref = 'content', lazy = True)
-    
+    estado =  db.Column(db.String(100), default = "creada")
 class Pregunta(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)
@@ -43,4 +48,9 @@ class Pregunta(db.Model):
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     description = db.Column(db.String(1000), nullable = False)
+    pregunta_id = db.Column(db.Integer, db.ForeignKey('pregunta.id'), nullable = False)
+
+class Respuesta(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable = False)
     pregunta_id = db.Column(db.Integer, db.ForeignKey('pregunta.id'), nullable = False)

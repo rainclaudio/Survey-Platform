@@ -26,7 +26,7 @@ posts = [
 @app.route("/")
 @app.route("/home")
 def home():
-    encuestas = Encuesta.query.all()
+    encuestas = Encuesta.query.filter_by(estado = "publicada")
     return render_template('home.html', posts=posts, encuestas = encuestas)
 
 
@@ -53,6 +53,7 @@ def responder_encuesta(encuesta_id):
             if str(type(request.form.get(f'{pregunta.id}'))) == "<class 'NoneType'>":
                 todas_respondidas = False
                 flash("¡Aun existen preguntas sin responder!", 'danger')
+                break
 
         if todas_respondidas:
             for pregunta in preguntas:
@@ -60,6 +61,7 @@ def responder_encuesta(encuesta_id):
                 respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
                 db.session.add(respuesta)
             db.session.commit()
+            flash("¡Felicidades! Has respondido la encuesta " + str(encuesta.title), 'success')
             return redirect('/')
             
     return render_template('responder_encuesta.html', 
@@ -92,32 +94,21 @@ def encuesta(encuesta_id):
         id_preguntas.append(preg.id)
 
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
-    items_preguntas = []
-
-    total_pregs = len(id_preguntas)
-    bool_items = 1
-
-    if len(items_preguntas) == 0:
-        bool_items = 0
-
-    for n in items_preguntas:
-        if n <= 1:
-            bool_items = 0
 
     boton_editar = False
-    encuestas_propias = Encuesta.query.filter_by(user_id = current_user.username)
-    for encuestas in encuestas_propias:
-        if encuestas.id == encuesta_id:
-            boton_editar = True
-            break
+    if current_user.is_authenticated:
+        print("user is auth")
+        encuestas_propias = Encuesta.query.filter_by(user_id = current_user.username)
+        for encuestas in encuestas_propias:
+            if encuestas.id == encuesta_id:
+                boton_editar = True
+                break
 
     return render_template('encuesta.html', 
         title= 'Encuesta',
         encuesta = encuesta,
         preguntas = preguntas,
         items = items,
-        total_pregs = total_pregs,
-        bool_items = bool_items,
         boton_editar = boton_editar,
     )
 

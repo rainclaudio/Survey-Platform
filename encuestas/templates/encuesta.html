@@ -26,4 +26,9 @@
         href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id) }}">Editar Encuesta</a>
 {%endif%}
 
+{%if encuesta.user_id == current_user.username%}
+    <a class="btn btn-outline-info"
+        href="{{ url_for('resultados_encuesta',encuesta_id = encuesta.id)  }}">Ver Resultados</a>
+{%endif%}
+
 {% endblock content %}

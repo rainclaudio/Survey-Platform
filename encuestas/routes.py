@@ -96,11 +96,13 @@ def encuesta(encuesta_id):
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
 
     boton_editar = False
+    boton_respuestas = False
     if current_user.is_authenticated:
         print("user is auth")
         encuestas_propias = Encuesta.query.filter_by(user_id = current_user.username)
         for encuestas in encuestas_propias:
             if encuestas.id == encuesta_id:
+                boton_respuestas = True
                 boton_editar = True
                 break
 
@@ -110,6 +112,7 @@ def encuesta(encuesta_id):
         preguntas = preguntas,
         items = items,
         boton_editar = boton_editar,
+        boton_respuestas = boton_respuestas
     )
 
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
@@ -258,4 +261,36 @@ def profile():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+#VER RESULTADOS
+@app.route("/resultados_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+@login_required
+def resultados_encuesta(encuesta_id):
+    
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+    id_preguntas = []
+    for preg in preguntas:
+        id_preguntas.append(preg.id)
+
+    items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+    mp = {}
+
+    for item in items:
+        temp = Respuesta.query.filter_by(item_id = item.id).all()
+        temp_tot = Respuesta.query.filter_by(pregunta_id = item.pregunta_id).all()
+        
+        mp[item.id] = '       '+ str(len(temp))+' / '+str(len(temp_tot))
+      
+
+    return render_template('resultado_encuesta.html', 
+        title= 'Resultados Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        mp=mp
+
+       
+    )
 

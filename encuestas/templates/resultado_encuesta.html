@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Título -->
+<h2 class="border-bottom mb-4">
+  Resultados {{ encuesta.title}}
+</h2>
+
+<!-- Preguntas -->
+<div class="content-section ml-4">
+    <div class = "form-group">
+      {%for pregunta in preguntas%}
+      <fieldset class="form-group">
+        <legend class="border-bottom">
+          {{pregunta.title}}
+        </legend>
+      </fieldset>
+        <ul>
+          {%for item in items%}
+          {%if item.pregunta_id == pregunta.id%}           
+            <li>{{item.description}} <small class="text-muted" align="center"> {{mp[item.id]}}    </small>  </li>
+          {%endif%}
+          {%endfor%}
+        </ul>
+      {%endfor%}
+    </div>
+</div>
+{% endblock content %}
+
+

@@ -13,7 +13,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 def home():
 
     encuestas = Encuesta.query.filter_by(estado = "publicada")
-    return render_template('home.html', posts=posts, encuestas = encuestas)
+    return render_template('home.html', encuestas = encuestas)
 
 
 

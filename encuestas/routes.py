@@ -1,33 +1,18 @@
+from crypt import methods
 from fileinput import filename
 from turtle import title
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
 from encuestas import app,db, bcrypt
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user, logout_user, login_required
 
-posts = [
-    {
-        'author': 'Claudio Rain',
-        'title': 'Entrevista 1',
-        'content': 'Aquí va una pequeña descripción',
-        'date_posted': 'April 20, 2022'
-    },
-    {
-        'author': 'Claudio Rain',
-        'title': 'Entrevista 2',
-        'content': 'Aquí va una pequeña descripción',
-        'date_posted': 'April 21, 2022'
-    }
-]
-
-
 @app.route("/")
 @app.route("/home")
 def home():
     encuestas = Encuesta.query.all()
-    return render_template('home.html', posts=posts, encuestas = encuestas)
+    return render_template('home.html', encuestas = encuestas)
 
 
 @app.route("/about")
@@ -155,7 +140,6 @@ def editar_encuesta(encuesta_id):
         if n <= 1:
             bool_items = 0
 
-
     encuesta_form = CrearEncuestaForm()
     pregunta_form = CrearPreguntaForm()
     return render_template('editar_encuesta.html', 
@@ -169,6 +153,60 @@ def editar_encuesta(encuesta_id):
         bool_items = bool_items
     )
         
+###########################################
+# Probando Javascript con flask
+
+@app.route('/fetchtest',methods=['GET'])
+def fetchtest():
+    return {"some text": "it was a success"}
+
+@app.route('/add_item_test',methods=['POST'])
+def add_item_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    pregunta_id = dataGet['pregunta_id']   
+    print(dataGet['pregunta_id'])
+
+    # creación del ITEM
+    item = Item(description = dataGet['description'], pregunta_id = pregunta_id)
+    db.session.add(item)
+    db.session.commit()
+
+    # Respuesta
+    reply = {"status":"success","id": item.id, "description" : item.description}
+    return jsonify(reply)
+
+@app.route('/delete_item_test', methods= ['POST'])
+def delete_item():
+
+    # obtener data recibida  
+    dataGet = request.get_json(force=True)
+    item_id = dataGet['item_id']
+    item = Item.query.get_or_404(item_id)
+    # Creación de datos 
+    db.session.delete(item)
+    db.session.commit()
+    # respuesta
+    reply = {"status": "deleted successfully"}
+   
+    return jsonify(reply)
+
+@app.route('/update_item_test',methods=['POST'])
+def update_item_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    item = Item.query.get_or_404(dataGet['item_id'])
+    item.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": item.id, "description" : item.description}
+    return jsonify(reply)
+
+
+# FIN experimentación javascript con flask
+###########################################
+
+
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta", methods=['GET', 'POST'])
 def add_pregunta(encuesta_id):
     pregunta_form = CrearPreguntaForm()

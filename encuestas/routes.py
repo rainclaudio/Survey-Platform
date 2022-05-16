@@ -59,17 +59,17 @@ def responder_encuesta(encuesta_id):
         respuesta_form = respuesta_form,
     )
 
+
+# ELIMINAR 
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required
 def crear_encuesta():
-    encuesta_form = CrearEncuestaForm()
-    if encuesta_form.validate_on_submit():
-            encuesta = Encuesta(title = encuesta_form.title.data, user_id = current_user.username )
-            db.session.add(encuesta)
-            db.session.commit()
-            flash(f'Encuesta {encuesta_form.title.data} creada! {encuesta.id}', 'success ')
-            return redirect( url_for('editar_encuesta', encuesta_id=encuesta.id))
-    return render_template('crear_encuesta.html', title= 'Crear Encuesta',encuesta_form = encuesta_form)
+    encuesta = Encuesta(title = 'Encuesta sin Título', user_id = current_user.username)
+    db.session.add(encuesta)
+    db.session.commit()
+    flash(f'Encuesta creada!', 'success ')
+    return redirect(url_for('editar_encuesta',encuesta_id = encuesta.id))
+
 
 @app.route("/encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 def encuesta(encuesta_id):
@@ -152,9 +152,19 @@ def editar_encuesta(encuesta_id):
 ###########################################
 # Probando Javascript con flask
 
-@app.route('/fetchtest',methods=['GET'])
-def fetchtest():
-    return {"some text": "it was a success"}
+
+# CRUD ENCUESTA
+@app.route('/update_pregunta_test',methods=['POST'])
+def update_pregunta_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    pregunta = Pregunta.query.get_or_404(dataGet['pregunta_id'])
+    pregunta.title = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": pregunta.id, "description" : pregunta.title}
+    return jsonify(reply)
+
 
 @app.route('/add_item_test',methods=['POST'])
 def add_item_test():
@@ -171,7 +181,54 @@ def add_item_test():
     # Respuesta
     reply = {"status":"success","id": item.id, "description" : item.description}
     return jsonify(reply)
+@app.route('/add_pregunta_test',methods=['POST'])
+def add_pregunta_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta_id = dataGet['encuesta_id']   
+    print(dataGet['encuesta_id'])
 
+    # creación del ITEM
+    pregunta = Pregunta(title = dataGet['description'], encuesta_id = encuesta_id)
+    db.session.add(pregunta)
+    db.session.commit()
+
+    # Respuesta
+    reply = {"status":"success","id": pregunta.id, "description" : pregunta.title}
+    return jsonify(reply)
+
+
+@app.route('/update_item_test',methods=['POST'])
+def update_item_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    item = Item.query.get_or_404(dataGet['item_id'])
+    item.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": item.id, "description" : item.description}
+    return jsonify(reply)
+@app.route('/delete_pregunta_test', methods=['POST'])
+def delete_pregunta():
+
+    # obtener data recibida  
+    dataGet = request.get_json(force=True)
+    pregunta_id = dataGet['pregunta_id']
+    pregunta = Pregunta.query.get_or_404(pregunta_id)
+    # Creación de datos 
+    print("ahora borro la pregunta");
+    id_items = [];
+    items_of_preg = Item.query.filter_by(pregunta_id = pregunta_id)
+    for item in items_of_preg:
+        id_items.append(item.id)
+    print(id_items)
+    db.session.delete(pregunta)
+    db.session.commit()
+    # respuesta
+    reply = {"status": "deleted successfully"}
+   
+    return jsonify(reply)
+ 
 @app.route('/delete_item_test', methods= ['POST'])
 def delete_item():
 
@@ -187,15 +244,15 @@ def delete_item():
    
     return jsonify(reply)
 
-@app.route('/update_item_test',methods=['POST'])
-def update_item_test():
+@app.route('/update_title_test',methods=['POST'])
+def update_title_test():
     # obtener la data que se ha recibido
     dataGet = request.get_json(force=True)
-    item = Item.query.get_or_404(dataGet['item_id'])
-    item.description = dataGet['description']
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.title = dataGet['description']
     db.session.commit()
     # Respuesta
-    reply = {"status":"success","id": item.id, "description" : item.description}
+    reply = {"status":"success","id": encuesta.id, "description" : encuesta.title}
     return jsonify(reply)
 
 

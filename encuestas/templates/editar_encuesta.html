@@ -5,8 +5,8 @@
 ></script>
 {%endblock scripts%} {% block content %}
 <!-- Título -->
-<h2 class="border-bottom mb-2">{{ encuesta.title}}</h2>
-
+<input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
+   
 {%if encuesta.estado == "publicada"%}
 <button
   type="button"
@@ -32,18 +32,19 @@
 
 <!-- TEST JAVASCRIPT AND FLASK -->
 {%for pregunta in preguntas%}
-
-<div class="content-section">
-  <fieldset class="form-group mb-0">
-    <legend class="">{{pregunta.title}}</legend>
+<div class="d-flex" id="container_of_{{pregunta.id}}">
+  
+  <div class="content-section w-85">
+  <fieldset class="form-group mb-2">
+    <input id="pregunta_{{pregunta.id}}" type="text" class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{pregunta.title}}'/>
   </fieldset>
   <ul id="list_of_{{pregunta.id}}" class="list-unstyled d-flex gap-3 flex-column">
     {%for item in items%} {%if pregunta.id == item.pregunta_id%}
-    <li class="d-flex gap-3 align-items-center">
+    <li id="{{item.id}}"class="d-flex gap-3 align-items-center">
       <ion-icon name="ellipse-outline"></ion-icon>
       <input id="input_{{pregunta.id}}-item_{{item.id}}" type="text" class="item-preg w-85 border-left-0 border-right-0 border-top-0" value = '{{item.description}}'/>
       <ion-icon
-        onclick="delete_item('{{pregunta.id}}','{{item.id}}');"
+        onclick="delete_item('{{pregunta.id}}','{{item.id}}',true);"
         id="close_{{pregunta.id}}-item_{{item.id}}"
         class="text-white bg-danger"
         name="close-outline"
@@ -54,47 +55,28 @@
   </ul>
   {%if encuesta.estado == "creada"%}
   <button
-    class="d-block p-1 bg-info text-white text-center w-25´"
-  
-      onclick="add_input_form('{{pregunta.id}}');"
-    
-  >
-    Añadir Item
-  </button>
+    class="d-block p-1 bg-info text-white text-center w-25"
+    onclick="add_input_form('{{pregunta.id}}');"
+  >Añadir Item</button>
 
   {%endif%}
-</div>
-{%endfor%}
-{%if encuesta.estado == "creada"%}
-<a class="d-block ml-4 p-2 bg-primary text-white text-center"
-   href="{{ url_for('add_pregunta', encuesta_id=encuesta.id) }}">Añadir Pregunta</a>
-{%endif%}
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+  </div>
+  <div class="content-section p-0 d-flex flex-column ">
+    <div class="h-50 p-3   d-flex  align-items-center border-bottom">
+      <ion-icon  onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')" name = "trash"></ion-icon>
+    </div>
+    
+    <div class="h-50 p-3 d-flex  align-items-center">
+      <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
     </div>
   </div>
 </div>
+{%endfor%}
+
+{%if encuesta.estado == "creada"%}
+<a id="addPregunta" class="d-block  p-2 bg-primary text-white text-center"
+   onclick="add_pregunta('{{encuesta.id}}')">Añadir Pregunta</a>
+{%endif%}
 
 <!-- Modal -->
 <div

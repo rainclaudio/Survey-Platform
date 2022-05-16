@@ -96,6 +96,33 @@ GAPS
 .w-85 {
   width: 90%;
 }
+.title-encuesta {
+  outline: none;
+  border-bottom: 0;
+  transition: border-bottom 0.1s linear;
+}
+.title-encuesta:focus {
+  outline: none;
+  border-bottom: 4px solid #428bca !important;
+}
+.title-encuesta:hover {
+  outline: none;
+  border-bottom: 1px solid #444;
+}
+.pregunta-encuesta {
+  font-size: 1.5rem;
+  outline: none;
+  border-bottom: 0;
+  transition: border-bottom 0.1s linear;
+}
+.pregunta-encuesta:focus {
+  outline: none;
+  border-bottom: 2px solid #428bca !important;
+}
+.pregunta-encuesta:hover {
+  outline: none;
+  border-bottom: 0.5px solid #444;
+}
 .item-preg {
   outline: none;
   border-bottom: 0;
@@ -109,4 +136,7 @@ GAPS
 .item-preg:hover {
   outline: none;
   border-bottom: 0.5px solid #444;
+}
+.outline-none {
+  outline: none;
 }

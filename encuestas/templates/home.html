@@ -1,13 +1,12 @@
-{% extends "layout.html" %} {% block content %} {% for encuesta in encuestas %}
+{% extends "layout.html" %} {%block scripts%} {%endblock scripts%} {% block
+content %} {% for encuesta in encuestas %}
 <article class="media content-section">
   <div class="media-body">
     <div class="article-metadata">
       <small class="text-muted">
         created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
       </small>
-      <small class="text-muted">
-        estado: <span class="font-weight-bold">{{encuesta.estado}}</span>
-      </small>
+      <small class="text-muted"> estado: {{encuesta.estado}} </small>
     </div>
     <h2>
       <a
@@ -16,7 +15,7 @@
         >{{ encuesta.title }}</a
       >
     </h2>
-    <p class="text-muted mb-0">autor: {{encuesta.user_id}}</p>
+    <small class="text-muted"> autor: {{encuesta.user_id}} </small>
   </div>
 </article>
 {% endfor %} {% endblock content %}

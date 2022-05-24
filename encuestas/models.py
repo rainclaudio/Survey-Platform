@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from encuestas import db, login_manager_
 from flask_login import UserMixin
 
@@ -38,7 +39,6 @@ class Encuesta(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     preguntas = db.relationship('Pregunta', backref = 'content', lazy = True)
     estado =  db.Column(db.String(100), default = "creada")
-
 class Pregunta(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)

@@ -181,6 +181,7 @@ def add_item_test():
     # Respuesta
     reply = {"status":"success","id": item.id, "description" : item.description}
     return jsonify(reply)
+    
 @app.route('/add_pregunta_test',methods=['POST'])
 def add_pregunta_test():
     # obtener la data que se ha recibido
@@ -259,7 +260,7 @@ def update_title_test():
 # FIN experimentación javascript con flask
 ###########################################
 
-
+# Eliminar
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta", methods=['GET', 'POST'])
 def add_pregunta(encuesta_id):
     pregunta_form = CrearPreguntaForm()
@@ -274,7 +275,7 @@ def add_pregunta(encuesta_id):
         title= 'Añadir Encuesta',
         pregunta_form = pregunta_form
     )
-
+# Eliminar
 @app.route("/editar_encuesta/<int:encuesta_id>/añadir_pregunta/<int:pregunta_id>", methods=['GET', 'POST'])
 def add_item(encuesta_id,pregunta_id):
     item_form = CrearItemForm()

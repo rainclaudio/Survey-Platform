@@ -4,6 +4,10 @@ from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
 from encuestas import app,db, bcrypt
+import os
+import secrets
+from PIL import Image
+
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user, logout_user, login_required
@@ -64,7 +68,7 @@ def responder_encuesta(encuesta_id):
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required
 def crear_encuesta():
-    encuesta = Encuesta(title = 'Encuesta sin Título', user_id = current_user.username)
+    encuesta = Encuesta(title = 'Encuesta sin Título',description = "", user_id = current_user.username)
     db.session.add(encuesta)
     db.session.commit()
     flash(f'Encuesta creada!', 'success ')
@@ -256,6 +260,31 @@ def update_title_test():
     reply = {"status":"success","id": encuesta.id, "description" : encuesta.title}
     return jsonify(reply)
 
+@app.route('/update_description_test',methods=['POST'])
+def update_description_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": encuesta.id, "description" : encuesta.description}
+    return jsonify(reply)
+
+
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
 
 # FIN experimentación javascript con flask
 ###########################################

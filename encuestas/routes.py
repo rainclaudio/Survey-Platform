@@ -383,14 +383,6 @@ def resultados_encuesta(encuesta_id):
     
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
 
-    default = [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 206, 86)',
-        'rgb(75, 192, 192)',
-        'rgb(153, 102, 255)',
-        'rgb(255, 159, 64)',
-    ]
     colores = [
         'rgb(191, 161, 148)',
         'rgb(248, 207, 155)',
@@ -407,44 +399,6 @@ def resultados_encuesta(encuesta_id):
         'rgb(253, 224, 202)',
         'rgb(2, 138, 155)',
     ]
-
-        #'rgb(254, 231, 143)',
-        #'rgb(88, 152, 193)',
-        #'rgb(138, 217, 57)',
-        #'rgb(189, 131, 82)',
-        #'rgb(126, 197, 211)',
-        #'rgb(254, 159, 99)',
-        #'rgb(123, 121, 228)',
-        #'rgb(74, 119, 154)',
-        #'rgb(191, 217, 78)',
-        #'rgb(254, 104, 136)',
-        #'rgb(61, 164, 235)',
-        #'rgb(254, 207, 92)',
-        #'rgb(62, 216, 195)',
-        #'rgb(156, 107, 254)',
-        #'rgb(177, 240, 241)',
-        #'rgb(231, 89, 111)',
-        #'rgb(206, 230, 101)',
-        #'rgb(206, 121, 228)',
-        #'rgb(198, 125, 109)',
-        #'rgb(253, 223, 65)',
-        #'rgb(81, 193, 193)',
-        #'rgb(248, 115, 86)',
-        #'rgb(133, 181, 238)',
-        #'rgb(254, 231, 143)',
-        #'rgb(148, 171, 160)',
-        #'rgb(231, 178, 234)',
-        #'rgb(253, 223, 65)',
-        #'rgb(90, 178, 188)',
-        #'rgb(123, 191, 119)',
-
-    #aux = []
-    #i = 0
-    #for i in range(len(colores)):
-        #index = random.randrange(len(colores))
-        #aux.append(colores[index])
-        #colores.pop(index)
-    #colores = aux
 
     item_a_color = {}
 

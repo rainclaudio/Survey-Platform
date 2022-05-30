@@ -336,7 +336,7 @@ BUTTONS
   color: white;
 }
 .home-width {
-  min-width: 70rem;
+  min-width: 65rem !important;
 }
 
 #canvasContainer {

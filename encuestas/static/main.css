@@ -33,6 +33,10 @@ h6 {
   font-weight: 500;
 }
 
+.container {
+  max-width: 70%;
+}
+
 .content-section {
   background: #ffffff;
   padding: 10px 20px;
@@ -139,4 +143,31 @@ GAPS
 }
 .outline-none {
   outline: none;
+}
+
+#canvasContainer {
+  margin-top: 30px;
+  margin-bottom: 365px;
+  position: relative;
+  width: 98%;
+}
+
+.canvas[id^='bar'] {
+  display:inline;
+  float: left;
+  width: 46%;
+  height: 100%;
+}
+
+.canvas[id^='donut'] {
+  display:inline;
+  float: left;
+  margin-left: 2%;
+  width: 50%;
+  height: 100%;
+}
+
+#chart-title {
+  width: 50%;
+  float: left;
 }

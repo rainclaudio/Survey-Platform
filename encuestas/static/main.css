@@ -203,6 +203,10 @@ body {
 .profile-head h5{
   color: #333;
 }
+.conborde{
+  border: 5px solid ;
+  color: #0062cc;
+}
 .profile-head h6{
   color: #0062cc;
 }

@@ -38,7 +38,7 @@ class updatePerfil(FlaskForm):
                         validators=[DataRequired(), Email()])
     submit = SubmitField('Actualiza tu información')
     picture = FileField('Actualiza foto de perfil', validators=[FileAllowed(['jpg','png'])])
-
+    visible = BooleanField('Sí, quiero mi información visible en el perfil', default=True)
     def validate_name(self,name):
         if name.data!= current_user.name:
             user = User.query.filter_by(name= name.data).first()
@@ -54,8 +54,8 @@ class LoginForm(FlaskForm):
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
     
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = BooleanField('Remember Me')
+    password = PasswordField('Contraseña', validators=[DataRequired()])
+    remember = BooleanField('Recuerda mi usuario')
     submit = SubmitField('Login')
 
 

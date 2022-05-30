@@ -47,7 +47,7 @@ def responder_encuesta(encuesta_id):
         if todas_respondidas:
             for pregunta in preguntas:
                 item_id_seleccionado = request.form.get(f'{pregunta.id}')
-                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
+                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id, id_usuario = current_user.username , id_encuesta =encuesta_id)
                 db.session.add(respuesta)
             db.session.commit()
             flash("¡Felicidades! Has respondido la encuesta " + str(encuesta.title), 'success')
@@ -103,6 +103,8 @@ def encuesta(encuesta_id):
         boton_editar = boton_editar,
         boton_respuestas = boton_respuestas
     )
+
+
 
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 def editar_encuesta(encuesta_id):
@@ -368,12 +370,15 @@ def guardarfoto(form_picture):
 def profile():
 
     form = updatePerfil()
+    respuesta = Respuesta.query.filter_by(id_usuario = current_user.username)
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = guardarfoto(form.picture.data)
             current_user.image_file = picture_file
         current_user.name = form.name.data
         current_user.email = form.email.data
+        current_user.visible_inf = form.visible.data
+
         db.session.commit()
         flash('Tus datos han sido actualizados', 'success')
         return redirect(url_for('profile'))
@@ -381,24 +386,46 @@ def profile():
         form.name.data = current_user.name
         form.email.data = current_user.email
          
-
+    
+    lista_query= []
+    encuest = {}
+    for i in respuesta:
+        datet =  i.date
+        encuest[i.date.strftime("%d/%m/%Y %H:%M:%S")] = i.id_encuesta
+        encRESP = Encuesta.query.filter_by(id = i.id_encuesta )
+        #print(encRESP)}
+    for i in encuest:
+        print(encuest[i])
+        lista_query.append(Encuesta.query.filter_by(id = encuest[i]  ))
+    if len(lista_query) ==0:
+        lista_query = 0
+   
+    
+    
     encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
     encCREATE = Encuesta.query.filter_by(user_id = current_user.username,estado = "creada" )
     encCLOSED = Encuesta.query.filter_by(user_id = current_user.username,estado = "cerrada" )
-    TOTAL=0
+    TOTAL=len(encuest)
     TOTALC=0
-    for i in encPUBLIC:
-        TOTAL=TOTAL+1
-    for i in encCREATE:
-        TOTAL=TOTAL+1
-    for i in encCLOSED:
-        TOTALC=TOTALC+1
-    print(current_user.tipo)
+    
+  
     tipo = False 
-    if current_user.tipo:
+    perfil_usuario =  'profile_encuestado.html'
+   
+    if current_user.tipo == '1':
         tipo = True
+        perfil_usuario =  'profile_encuestador.html'
+        for i in encPUBLIC:
+            TOTAL=TOTAL+1
+        for i in encCREATE:
+            TOTAL=TOTAL+1
+        for i in encCLOSED:
+            TOTALC=TOTALC+1
+        
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
-    return render_template('profile.html', title='Profile', image_file=image_file,  encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo)
+    
+   
+    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query)
 
 @app.route("/logout")
 def logout():

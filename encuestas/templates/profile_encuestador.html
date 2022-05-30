@@ -49,8 +49,10 @@
                                             Encuestado
                                         {%    endif %}
                                     </h6>
+                                    
                                     <p class="proile-rating">ENCUESTAS CON RESULTADOS FINALES: <span>{{TOTALC}}/{{TOTAL}}</span></p>
                                     <div class="tab-content profile-tab" id="myTabContent">
+                                        {% if current_user.visible_inf == '1' %}
                                         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                             <div class="row tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
                                                 <div class="col-md-6">
@@ -67,6 +69,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {%    endif %}
                                         <div class="menu" style="display: none;">
                                             <form method="POST" action="" enctype="multipart/form-data">
                                                 {{ form.hidden_tag() }}
@@ -110,6 +113,11 @@
                                                           {% endfor %}
                                                       {% endif %}
                                                     </div>
+                                                    <div class="form-check">
+                                                        {{ form.visible(class="form-check-input") }} {{
+                                                        form.visible.label(class="form-check-label") }}
+                                                      </div>
+                                                    
                                                  
                                                   </fieldset>
                                                   <div class="form-group mb-2">

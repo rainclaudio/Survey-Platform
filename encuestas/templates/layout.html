@@ -25,28 +25,28 @@
 </head>
 <body>
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <nav class="navbar navbar-expand-lg bg-white navbar-light bg-white fixed-top ">
         <div class="container">
-          <a class="navbar-brand mr-4" href="/">Encuestas</a>
+          <a class="navbar-brand mr-4 " href="/">Encuestas</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item text-white nav-link" href="{{ url_for('home') }}">Home</a>
-              <!-- <a class="nav-item text-white nav-link" href="{{ url_for('about') }}">About</a> -->
-              {% if current_user.is_authenticated %}
-              <a class="nav-item text-white nav-link" href="{{ url_for('crear_encuesta')}}">Crear Encuesta</a>
+              
+              {% if current_user.is_authenticated and current_user.tipo =='1' %}
+              <a class="nav-item text-secondary nav-link" href="{{ url_for('crear_encuesta')}}">Crear Encuesta</a>
               {% endif %}
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if current_user.is_authenticated %}
-              <a class="nav-item text-white nav-link" href="{{ url_for('profile') }}">Perfil</a>
-              <a class="nav-item text-white nav-link" href="{{ url_for('logout') }}">Salir</a>
+              <a class="nav-item text-secondary nav-link  btn-link px-3 me-2" href="{{ url_for('profile') }}">Perfil</a>
+               
+              <a class="nav-item text-secondary nav-link" href="{{ url_for('logout') }}">Salir</a>
               {% else %}
-              <a class="nav-item text-white nav-link" href="{{ url_for('login') }}">Login</a>
-              <a class="nav-item text-white nav-link" href="{{ url_for('register') }}">Registrate</a>
+              <a class="nav-item text-secondary nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item text-secondary nav-link" href="{{ url_for('register') }}">Registrate</a>
               {% endif %}
             </div>
           </div>
@@ -56,8 +56,10 @@
 
 
     <main role="main" class="container">
-      <div class="row">
-        <div id="content-section" class="">
+
+      <div >
+        <div id="content-section ">
+
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}

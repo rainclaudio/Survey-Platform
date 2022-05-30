@@ -1,14 +1,18 @@
 from crypt import methods
 from fileinput import filename
+from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
 from encuestas import app,db, bcrypt
+
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
+from PIL import Image
 import os
+import random
 
 @app.route("/")
 @app.route("/home")
@@ -66,7 +70,7 @@ def responder_encuesta(encuesta_id):
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required
 def crear_encuesta():
-    encuesta = Encuesta(title = 'Encuesta sin Título', user_id = current_user.username)
+    encuesta = Encuesta(title = 'Encuesta sin Título',description = "", user_id = current_user.username)
     db.session.add(encuesta)
     db.session.commit()
     flash(f'Encuesta creada!', 'success ')
@@ -221,8 +225,8 @@ def delete_pregunta():
     pregunta_id = dataGet['pregunta_id']
     pregunta = Pregunta.query.get_or_404(pregunta_id)
     # Creación de datos 
-    print("ahora borro la pregunta");
-    id_items = [];
+    print("ahora borro la pregunta")
+    id_items = []
     items_of_preg = Item.query.filter_by(pregunta_id = pregunta_id)
     for item in items_of_preg:
         id_items.append(item.id)
@@ -260,7 +264,43 @@ def update_title_test():
     reply = {"status":"success","id": encuesta.id, "description" : encuesta.title}
     return jsonify(reply)
 
+@app.route('/update_description_test',methods=['POST'])
+def update_description_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": encuesta.id, "description" : encuesta.description}
+    return jsonify(reply)
 
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/survey_pics', picture_fn)
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    # i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+@app.route("/save_image_test", methods=['GET', 'POST'])
+def save_image():
+   picture = request.files['static_file']
+   id_enc = request.form['static_id']
+   print(request.form['static_id'])
+   encuesta = Encuesta.query.get_or_404(id_enc)
+   if picture:
+        picture_file = save_picture(picture)
+        encuesta.image_file = picture_file
+   print(encuesta.image_file)
+   db.session.commit()
+   flash('La imagen ha sido subida!', 'success')
+   return jsonify({ "jajas": "jajas"})
 # FIN experimentación javascript con flask
 ###########################################
 
@@ -440,27 +480,70 @@ def resultados_encuesta(encuesta_id):
     
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+    
+    map_preg_a_array_cant_resp_item = {}
+    map_preg_a_array_percent_resp_item = {}
+    map_preg_a_array_str = {}
     id_preguntas = []
+
     for preg in preguntas:
         id_preguntas.append(preg.id)
-
+        map_preg_a_array_cant_resp_item[preg.id] = []
+        map_preg_a_array_percent_resp_item[preg.id] = []
+        map_preg_a_array_str[preg.id] = []
+    
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
-    mp = {}
+
+    colores = [
+        'rgb(191, 161, 148)',
+        'rgb(248, 207, 155)',
+        'rgb(222, 90, 90)',
+        'rgb(236, 151, 109)',
+        'rgb(253, 197, 150)',
+        'rgb(253, 234, 204)',
+        'rgb(123, 126, 175)',
+        'rgb(74, 75, 123)',
+        'rgb(240, 185, 197)',
+        'rgb(196, 143, 193)',
+        'rgb(110, 112, 172)',
+        'rgb(159, 166, 209)',
+        'rgb(253, 224, 202)',
+        'rgb(2, 138, 155)',
+    ]
+
+    item_a_color = {}
+
+    for preg in preguntas:
+        index = 0
+        for item in items:
+            if item.pregunta_id == preg.id:
+                map_preg_a_array_cant_resp_item[preg.id].append(len(Respuesta.query.filter_by(item_id = item.id).all()))
+                map_preg_a_array_percent_resp_item[preg.id].append(len(Respuesta.query.filter_by(item_id = item.id).all()))
+                map_preg_a_array_str[preg.id].append(item.description)
+                item_a_color[item.id] = colores[index % len(colores)]
+                index += 1
+
+    map_respuestas_y_total = {}
 
     for item in items:
         temp = Respuesta.query.filter_by(item_id = item.id).all()
         temp_tot = Respuesta.query.filter_by(pregunta_id = item.pregunta_id).all()
-        
-        mp[item.id] = '       '+ str(len(temp))+' / '+str(len(temp_tot))
-      
+        map_respuestas_y_total[item.id] = [len(temp), len(temp_tot)]
+    
+    for preg in preguntas:
+        for i in range(len(map_preg_a_array_percent_resp_item[preg.id])):
+            map_preg_a_array_percent_resp_item[preg.id][i] = round(map_preg_a_array_percent_resp_item[preg.id][i] * 100 / map_respuestas_y_total[item.id][1], 1)
 
     return render_template('resultado_encuesta.html', 
         title= 'Resultados Encuesta',
         encuesta = encuesta,
         preguntas = preguntas,
         items = items,
-        mp=mp
-
-       
+        map_respuestas_y_total = map_respuestas_y_total,
+        map_preg_resp = map_preg_a_array_cant_resp_item,
+        map_preg_perc = map_preg_a_array_percent_resp_item,
+        map_preg_str = map_preg_a_array_str,
+        item_a_color = item_a_color,
+        colores = colores,
     )
 

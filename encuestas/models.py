@@ -37,6 +37,8 @@ class Post(db.Model):
 class Encuesta(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100),nullable = False)
+    description = db.Column(db.String(1000), nullable = False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     date_created = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     date_posted = db.Column(db.DateTime, default = datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)

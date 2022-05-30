@@ -3,24 +3,107 @@
 {% block content %}
 <!-- Título -->
 <h2 class="border-bottom mb-4">
-  Resultados {{ encuesta.title}}
+  Resultados {{ encuesta.title }}
 </h2>
 
 <!-- Preguntas -->
+<script src="https://kit.fontawesome.com/eaf16f94b1.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <div class="content-section ml-4">
     <div class = "form-group">
+      <script type=text/javascript>
+        var ctx;
+        var barChart = {};
+        var donutChart = {}
+      </script>
       {%for pregunta in preguntas%}
       <fieldset class="form-group">
         <legend class="border-bottom">
           {{pregunta.title}}
         </legend>
       </fieldset>
-        <ul>
+        <ul style="list-style-type: none;">
           {%for item in items%}
-          {%if item.pregunta_id == pregunta.id%}           
-            <li>{{item.description}} <small class="text-muted" align="center"> {{mp[item.id]}}    </small>  </li>
-          {%endif%}
+            {%if item.pregunta_id == pregunta.id%}           
+              <li>
+                <i class="fa-solid fa-square" style="color: {{ item_a_color[item.id] }}; margin-left: 4px; margin-right: 10px;"></i>
+                {{ item.description }}
+                <p1 class="text-muted" align="center"> {{ map_respuestas_y_total[item.id][0] }} / {{ map_respuestas_y_total[item.id][1] }} </p1>
+              </li>
+            {%endif%}
           {%endfor%}
+          <div style="width: 96%; margin-top: 20px; height: 15px;">
+            <p1 id="chart-title" style="font-weight: bold; text-align: center;">
+              Cantidad de respuestas
+            </p1>
+            <p2 id="chart-title" style="font-weight: bold; text-align: center;">
+              Porcentajes
+            </p2>
+          </div>
+          <div id="canvasContainer">
+            <canvas class="canvas" id="bar {{ pregunta.id }}" height="325"></canvas>
+            <canvas class="canvas" id="donut {{ pregunta.id }}" height="297"></canvas>
+          </div>
+          <script type=text/javascript>
+            ctx = document.getElementById("bar " + String({{ pregunta.id }})).getContext('2d');
+            barChart[{{ pregunta.id }}] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ map_preg_str[pregunta.id] | safe }},
+                    datasets: [{
+                        data: {{ map_preg_resp[pregunta.id] | safe }},
+                        backgroundColor: {{ colores | safe }},
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                        x: {
+                            grid: {
+                              display: false,
+                            },
+                            beginAtZero: true,
+                            ticks: {
+                              callback: function(value, index, ticks) {
+                                return ''
+                              },
+                            },
+                        },
+                    },
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    borderRadius: 5,
+                }
+            });
+            ctx = document.getElementById("donut " + String({{ pregunta.id }})).getContext('2d');
+            donutChart[{{ pregunta.id }}] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ map_preg_str[pregunta.id] | safe }},
+                    datasets: [{
+                        data: {{ map_preg_perc[pregunta.id] | safe }},
+                        backgroundColor: {{ colores | safe }},
+                    }]
+                },
+                options: {
+                    plugins: {
+                      legend: {
+                        display: false
+                      }
+                    },
+                    responsive: false,
+                    hoverOffset: 2,
+                    borderWidth: 0,
+                    borderRadius: 5,
+                }
+            });
+          </script>
         </ul>
       {%endfor%}
     </div>

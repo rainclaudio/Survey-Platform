@@ -48,6 +48,30 @@ document.querySelectorAll(".item-preg").forEach((item) => {
     );
   });
 });
+document.querySelectorAll(".image_of_encuesta").forEach((item) => {
+  item.addEventListener("change", async function () {
+    console.log("has dejado el campo editar item " + item.files[0].name);
+    console.log("el item id: ", item.id.split("image_of_encuesta_")[1]);
+    var parts_iamge = item.files[0].name.split(".");
+
+    let form = document.createElement("form");
+    let input_fake = document.createElement("input");
+    input_fake.type = "text";
+    input_fake.value = item.id.split("image_of_encuesta_")[1];
+    input_fake.name = "static_id";
+    form.appendChild(item);
+    form.appendChild(input_fake);
+    console.log(form);
+    form.enctype = "multipart/form-data";
+    let formData = new FormData(form);
+    console.log(formData);
+    // formData.append("photo", item.files[0]);
+    var dataReply_updt_item = await update_image_encuesta(
+      item.id.split("image_of_encuesta_")[1],
+      formData
+    );
+  });
+});
 
 /*********************************************************************/
 /*                        Request function                          */
@@ -133,7 +157,19 @@ async function update_descr_encuesta(encuesta_id, description) {
   console.log(dataReply);
   return dataReply;
 }
-
+async function update_image_encuesta(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de item y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/save_image_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: description,
+  });
+  console.log(dataReply);
+  return dataReply;
+}
 async function update_item(item_id, description) {
   // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
   // Toma el id de item y lo actualiza

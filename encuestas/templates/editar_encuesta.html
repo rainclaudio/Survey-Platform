@@ -32,6 +32,16 @@
 </form>
 {%endif%}
 
+
+<input type="file"
+       id="image_of_encuesta_{{encuesta.id}}" 
+       class="image_of_encuesta"
+       name="static_file"
+       accept="image/png, image/jpg">
+       
+
+<!-- TEST JAVASCRIPT AND FLASK -->
+<!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
 {%for pregunta in preguntas%}
 <div class="d-flex" id="container_of_{{pregunta.id}}">

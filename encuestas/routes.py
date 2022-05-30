@@ -1,5 +1,6 @@
 from crypt import methods
 from fileinput import filename
+from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
@@ -272,20 +273,31 @@ def update_description_test():
     return jsonify(reply)
 
 
-
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(current_app.root_path, 'static/profile_pics', picture_fn)
-
+    picture_path = os.path.join(app.root_path, 'static/survey_pics', picture_fn)
     output_size = (125, 125)
     i = Image.open(form_picture)
-    i.thumbnail(output_size)
+    # i.thumbnail(output_size)
     i.save(picture_path)
 
     return picture_fn
 
+@app.route("/save_image_test", methods=['GET', 'POST'])
+def save_image():
+   picture = request.files['static_file']
+   id_enc = request.form['static_id']
+   print(request.form['static_id'])
+   encuesta = Encuesta.query.get_or_404(id_enc)
+   if picture:
+        picture_file = save_picture(picture)
+        encuesta.image_file = picture_file
+   print(encuesta.image_file)
+   db.session.commit()
+   flash('La imagen ha sido subida!', 'success')
+   return jsonify({ "jajas": "jajas"})
 # FIN experimentación javascript con flask
 ###########################################
 

@@ -16,6 +16,18 @@ document.querySelectorAll(".title-encuesta").forEach((encuesta) => {
     );
   });
 });
+document.querySelectorAll(".description-encuesta").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log(
+      "has dejado el campo editar description encuesta: " + encuesta.value
+    );
+    console.log("el encuesta id: ", encuesta.id.split("encuesta_descr_")[1]);
+    var dataReply_updt_item = await update_descr_encuesta(
+      encuesta.id.split("encuesta_descr_")[1],
+      encuesta.value
+    );
+  });
+});
 document.querySelectorAll(".pregunta-encuesta").forEach((pregunta) => {
   pregunta.addEventListener("blur", async function () {
     console.log("has dejado el campo editar título pregunta" + pregunta.value);
@@ -33,6 +45,30 @@ document.querySelectorAll(".item-preg").forEach((item) => {
     var dataReply_updt_item = await update_item(
       item.id.split("item_")[1],
       item.value
+    );
+  });
+});
+document.querySelectorAll(".image_of_encuesta").forEach((item) => {
+  item.addEventListener("change", async function () {
+    console.log("has dejado el campo editar item " + item.files[0].name);
+    console.log("el item id: ", item.id.split("image_of_encuesta_")[1]);
+    var parts_iamge = item.files[0].name.split(".");
+
+    let form = document.createElement("form");
+    let input_fake = document.createElement("input");
+    input_fake.type = "text";
+    input_fake.value = item.id.split("image_of_encuesta_")[1];
+    input_fake.name = "static_id";
+    form.appendChild(item);
+    form.appendChild(input_fake);
+    console.log(form);
+    form.enctype = "multipart/form-data";
+    let formData = new FormData(form);
+    console.log(formData);
+    // formData.append("photo", item.files[0]);
+    var dataReply_updt_item = await update_image_encuesta(
+      item.id.split("image_of_encuesta_")[1],
+      formData
     );
   });
 });
@@ -105,7 +141,35 @@ async function update_title(encuesta_id, description) {
   console.log(dataReply);
   return dataReply;
 }
-
+async function update_descr_encuesta(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_description_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      description: description,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+async function update_image_encuesta(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de item y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/save_image_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: description,
+  });
+  console.log(dataReply);
+  return dataReply;
+}
 async function update_item(item_id, description) {
   // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
   // Toma el id de item y lo actualiza
@@ -203,13 +267,7 @@ async function add_input_form(pregunta_id) {
   // 8) Añadir configuraciones y estilos
   input.type = "text";
   input.value = `Alternativa ${countChilds + 1}`;
-  input.classList.add(
-    "item-preg",
-    "w-85",
-    "border",
-    "border-primary",
-    "border-left-0"
-  );
+  input.classList.add("item-preg", "w-85", "border-0", "border-left-0");
   // 9) Mandamos una request a la base de datos para insertar el campo Item
   //    Notar el body: contiene la descripción y pregunta id
   var dataReply = await request({

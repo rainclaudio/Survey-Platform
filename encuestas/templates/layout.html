@@ -57,7 +57,7 @@
 
     <main role="main" class="container">
       <div class="row">
-        <div id="content-section" class="col-md-8">
+        <div id="content-section" class="">
           {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
               {% for category, message in messages %}

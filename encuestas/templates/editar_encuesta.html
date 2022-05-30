@@ -6,7 +6,9 @@
 {%endblock scripts%} {% block content %}
 <!-- Título -->
 <input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
-   
+   <!--Descripción  -->
+<input id="encuesta_descr_{{encuesta.id}}" type="text" class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{encuesta.description}}'/>
+
 {%if encuesta.estado == "publicada"%}
 <button
   type="button"
@@ -30,6 +32,16 @@
 </form>
 {%endif%}
 
+
+<input type="file"
+       id="image_of_encuesta_{{encuesta.id}}" 
+       class="image_of_encuesta"
+       name="static_file"
+       accept="image/png, image/jpg">
+       
+
+<!-- TEST JAVASCRIPT AND FLASK -->
+<!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
 {%for pregunta in preguntas%}
 <div class="d-flex" id="container_of_{{pregunta.id}}">

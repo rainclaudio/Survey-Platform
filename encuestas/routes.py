@@ -423,6 +423,9 @@ def profile():
 
     form = updatePerfil()
     respuesta = Respuesta.query.filter_by(id_usuario = current_user.username)
+
+
+
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = guardarfoto(form.picture.data)
@@ -437,21 +440,28 @@ def profile():
     elif request.method == 'GET':
         form.name.data = current_user.name
         form.email.data = current_user.email
-         
-    
+
+
+
     lista_query= []
     encuest = {}
     for i in respuesta:
         datet =  i.date
-        encuest[i.date.strftime("%d/%m/%Y %H:%M:%S")] = i.id_encuesta
+        encuest[i.date.strftime("%d-%m-%Y %H:%M:%S")] = i.id_encuesta
         encRESP = Encuesta.query.filter_by(id = i.id_encuesta )
         #print(encRESP)}
+
+
+
+    keys = list(encuest.keys())
+
+
     for i in encuest:
         print(encuest[i])
-        lista_query.append(Encuesta.query.filter_by(id = encuest[i]  ))
+        lista_query.append(Encuesta.query.filter_by(id = encuest[i] ))
     if len(lista_query) ==0:
         lista_query = 0
-   
+
     
     
     encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
@@ -477,7 +487,7 @@ def profile():
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
     
    
-    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query)
+    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys)
 
 @app.route("/logout")
 def logout():
@@ -559,3 +569,38 @@ def resultados_encuesta(encuesta_id):
         colores = colores,
     )
 
+
+@app.route("/encuesta/<encuesta_id>/respuesta/<date_time>", methods=['GET'])
+@login_required
+def respuestas_encuesta(encuesta_id, date_time):
+    
+    
+    encuesta = Encuesta.query.get_or_404(encuesta_id)
+    preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
+
+    id_preguntas = []
+    for preg in preguntas:
+        id_preguntas.append(preg.id)
+
+    items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
+
+
+    filtro1 = date_time + ":000000"
+    filtro2 = date_time + ":999999"
+
+    date1 = datetime.strptime(filtro1, '%d-%m-%Y %H:%M:%S:%f')
+    date2 = datetime.strptime(filtro2, '%d-%m-%Y %H:%M:%S:%f')
+
+    respuestas = Respuesta.query.filter(Respuesta.id_usuario == current_user.username, Respuesta.date >= date1, Respuesta.date <= date2)
+
+    for r in respuestas:
+        print("hola " + str(r.id))
+
+    return render_template('respuestas_encuesta.html', 
+        title = 'Respuestas Encuesta',
+        encuesta = encuesta,
+        preguntas = preguntas,
+        items = items,
+        respuestas = respuestas,
+        date_time = date_time
+    )

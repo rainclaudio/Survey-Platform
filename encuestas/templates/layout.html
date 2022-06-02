@@ -10,17 +10,27 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
+
+    <!-- Para destacar las respuestas hechas por un encuestado -->
+    <style type='text/css'>
+        .focusNode {
+            background-color: #C6F4D3;
+        }
+
+        .focusNode ul {
+            background-color: white;
+        }
+    </style>
+
     {% if title %}
-        <title>Encuestas - {{ title }}</title>
+    <title>Encuestas - {{ title }}</title>
     {% else %}
-        <title>Encuestas</title>
+    <title>Encuestas</title>
     {% endif %}
     <!-- <link rel="manifest" href="manifest.webmanifest" /> -->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
+          rel="stylesheet" />
     {%block scripts%} {%endblock%}
 </head>
 <body>

@@ -5,6 +5,6 @@
     "\\encuestas\\static",
     "\\encuestas\\templates"
   ],
-  "SelectedNode": "\\encuestas\\models.py",
+  "SelectedNode": "\\encuestas\\routes.py",
   "PreviewInSolutionExplorer": false
 }

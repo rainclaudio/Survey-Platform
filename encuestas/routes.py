@@ -1,5 +1,5 @@
-from crypt import methods
 from fileinput import filename
+from re import A
 from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
@@ -19,7 +19,19 @@ import random
 def home():
 
     encuestas = Encuesta.query.filter_by(estado = "publicada")
-    return render_template('home.html', encuestas = encuestas)
+
+    #Creo un diccionario y por cada encuesta le pregunto a la base de datos
+    # cuantas respuestas tiene asociadas, como cada Respuesta esta asociada a una 
+    # pregunta, la cantidad de respuestas entregadas por la query la divido
+    # entre la cantidad de preguntas de la encuesta y listo.
+
+    cant_respuestas = {}    
+    for encuesta in encuestas:
+        aux = Respuesta.query.filter(Respuesta.id_encuesta == encuesta.id).count()
+        aux = int(aux / len(encuesta.preguntas)) 
+        cant_respuestas[encuesta.id] = aux
+
+    return render_template('home.html', encuestas = encuestas, cant_respuestas = cant_respuestas)
 
 
 

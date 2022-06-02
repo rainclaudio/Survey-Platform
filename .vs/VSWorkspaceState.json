@@ -2,8 +2,9 @@
   "ExpandedNodes": [
     "",
     "\\encuestas",
+    "\\encuestas\\static",
     "\\encuestas\\templates"
   ],
-  "SelectedNode": "\\encuestas\\routes.py",
+  "SelectedNode": "\\encuestas\\models.py",
   "PreviewInSolutionExplorer": false
 }

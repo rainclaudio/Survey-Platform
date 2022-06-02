@@ -1,12 +1,17 @@
 from crypt import methods
 from fileinput import filename
+from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
 from encuestas import app,db, bcrypt
-from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm
+
+from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
 from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
 from flask_login import login_user, current_user, logout_user, login_required
+import secrets
+from PIL import Image
+import os
 import random
 
 @app.route("/")
@@ -46,7 +51,7 @@ def responder_encuesta(encuesta_id):
         if todas_respondidas:
             for pregunta in preguntas:
                 item_id_seleccionado = request.form.get(f'{pregunta.id}')
-                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id)
+                respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id, id_usuario = current_user.username , id_encuesta =encuesta_id)
                 db.session.add(respuesta)
             db.session.commit()
             flash("¡Felicidades! Has respondido la encuesta " + str(encuesta.title), 'success')
@@ -65,7 +70,7 @@ def responder_encuesta(encuesta_id):
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required
 def crear_encuesta():
-    encuesta = Encuesta(title = 'Encuesta sin Título', user_id = current_user.username)
+    encuesta = Encuesta(title = 'Encuesta sin Título',description = "", user_id = current_user.username)
     db.session.add(encuesta)
     db.session.commit()
     flash(f'Encuesta creada!', 'success ')
@@ -102,6 +107,8 @@ def encuesta(encuesta_id):
         boton_editar = boton_editar,
         boton_respuestas = boton_respuestas
     )
+
+
 
 @app.route("/editar_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 def editar_encuesta(encuesta_id):
@@ -257,7 +264,43 @@ def update_title_test():
     reply = {"status":"success","id": encuesta.id, "description" : encuesta.title}
     return jsonify(reply)
 
+@app.route('/update_description_test',methods=['POST'])
+def update_description_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": encuesta.id, "description" : encuesta.description}
+    return jsonify(reply)
 
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/survey_pics', picture_fn)
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    # i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+@app.route("/save_image_test", methods=['GET', 'POST'])
+def save_image():
+   picture = request.files['static_file']
+   id_enc = request.form['static_id']
+   print(request.form['static_id'])
+   encuesta = Encuesta.query.get_or_404(id_enc)
+   if picture:
+        picture_file = save_picture(picture)
+        encuesta.image_file = picture_file
+   print(encuesta.image_file)
+   db.session.commit()
+   flash('La imagen ha sido subida!', 'success')
+   return jsonify({ "jajas": "jajas"})
 # FIN experimentación javascript con flask
 ###########################################
 
@@ -301,10 +344,10 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hash_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username =form.username.data, email=form.email.data, password =  hash_pass)
+        user = User(username =form.username.data, name =form.name.data, email=form.email.data, password =  hash_pass, tipo=form.tipo.data)
         db.session.add(user)
         db.session.commit()
-        flash(f'Creaste tu cuenta, bienvenid@ {form.username.data}!', 'success')
+        flash(f'Creaste tu cuenta, bienvenid@ {form.name.data}!', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -349,12 +392,80 @@ def publicar_encuesta(encuesta_id,total_pregs,bool_items):
         flash('Your post #' + str(encuesta_id) + ' has been posted!', 'success')
         return redirect(url_for('home'))
 
-@app.route("/profile")
+def guardarfoto(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+    form_picture.save(picture_path)
+    
+    prev_picture = os.path.join(app.root_path, 'static/profile_pics', current_user.image_file)
+    if os.path.exists(prev_picture) and os.path.basename(prev_picture) != 'default.jpg':
+        os.remove(prev_picture)
+
+    return picture_fn
+
+@app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
-    encuestas = Encuesta.query.filter_by(user_id = current_user.username)
+
+    form = updatePerfil()
+    respuesta = Respuesta.query.filter_by(id_usuario = current_user.username)
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = guardarfoto(form.picture.data)
+            current_user.image_file = picture_file
+        current_user.name = form.name.data
+        current_user.email = form.email.data
+        current_user.visible_inf = form.visible.data
+
+        db.session.commit()
+        flash('Tus datos han sido actualizados', 'success')
+        return redirect(url_for('profile'))
+    elif request.method == 'GET':
+        form.name.data = current_user.name
+        form.email.data = current_user.email
+         
+    
+    lista_query= []
+    encuest = {}
+    for i in respuesta:
+        datet =  i.date
+        encuest[i.date.strftime("%d/%m/%Y %H:%M:%S")] = i.id_encuesta
+        encRESP = Encuesta.query.filter_by(id = i.id_encuesta )
+        #print(encRESP)}
+    for i in encuest:
+        print(encuest[i])
+        lista_query.append(Encuesta.query.filter_by(id = encuest[i]  ))
+    if len(lista_query) ==0:
+        lista_query = 0
+   
+    
+    
+    encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
+    encCREATE = Encuesta.query.filter_by(user_id = current_user.username,estado = "creada" )
+    encCLOSED = Encuesta.query.filter_by(user_id = current_user.username,estado = "cerrada" )
+    TOTAL=len(encuest)
+    TOTALC=0
+    
+  
+    tipo = False 
+    perfil_usuario =  'profile_encuestado.html'
+   
+    if current_user.tipo == '1':
+        tipo = True
+        perfil_usuario =  'profile_encuestador.html'
+        for i in encPUBLIC:
+            TOTAL=TOTAL+1
+        for i in encCREATE:
+            TOTAL=TOTAL+1
+        for i in encCLOSED:
+            TOTALC=TOTALC+1
+        
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
-    return render_template('profile.html', title='Profile', image_file=image_file,  encuestas = encuestas)
+    
+   
+    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query)
 
 @app.route("/logout")
 def logout():

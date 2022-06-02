@@ -1,0 +1,195 @@
+{% extends "layout.html" %} 
+{% block content %}
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        $('#btn').click(function() {
+        $('.menu').toggle("slide");
+        });
+    });
+    </script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+
+<div class="container emp-profile">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+        
+      
+                
+                <div class="row">
+                    
+                    <div class="col-md-4">
+                        <div class="profile-img   ">
+                            <img src = "{{image_file}}" alt=""/>
+                        </div>
+                    
+                    
+                    </div>
+                    <div class="col-md-6">
+                        <div class="profile-head">
+                                    <h5>
+                                        {{current_user.name}}
+                                    </h5>
+                                    <h6>
+                                        {% if tipo %}
+                                            Encuestador
+                                        {%    else %}
+                                            Encuestado
+                                        {%    endif %}
+                                    </h6>
+                                    <p class="proile-rating">ENCUESTAS RESPONDIDAS: <span>{{TOTAL}}</span></p>
+                                    <div class="tab-content profile-tab" id="myTabContent">
+                                        {% if current_user.visible_inf == '1' %}
+                                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                            <div class="row tab-pane fade show active " id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                <div class="col-md-6">
+                                                    <label>Id usuario</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p>{{current_user.username}}</p>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label>Mail</label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <p>{{current_user.email}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {%    endif %}
+                                        <div class="menu" style="display: none;">
+                                            <form method="POST" action="" enctype="multipart/form-data">
+                                                {{ form.hidden_tag() }}
+                                                <fieldset class="form-group">
+
+                                                <p class="border-bottom mb-4">Información del perfil</p>
+                                                
+                                                <div class="form-group">
+                                                      {{ form.name.label(class="form-control-label") }} {% if
+                                                      form.name.errors %} {{ form.name(class="form-control
+                                                      form-control-lg is-invalid") }}
+                                                      <div class="invalid-feedback">
+                                                        {% for error in form.name.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                      </div>
+                                                      {% else %} {{ form.name(class="form-control form-control-lg") }} {%
+                                                      endif %}
+                                                    </div>
+                                                   
+                                                              
+                                                  
+                                                    <div class="form-group">
+                                                      {{ form.email.label(class="form-control-label") }} {% if
+                                                      form.email.errors %} {{ form.email(class="form-control form-control-lg
+                                                      is-invalid") }}
+                                                      <div class="invalid-feedback">
+                                                        {% for error in form.email.errors %}
+                                                        <span>{{ error }}</span>
+                                                        {% endfor %}
+                                                      </div>
+                                                      {% else %} {{ form.email(class="form-control form-control-lg") }} {%
+                                                      endif %}
+                                                    </div>
+                                                    <div class="form-group">
+                                                      {{ form.picture.label() }}
+                                                      {{ form.picture(class="form-control-file") }} 
+                                                      {%if form.picture.errors %}
+                                                          {%for error in form.picture.errors %}
+                                                          <span class ="text-danger">{{error}}</span></br>
+                                                          {% endfor %}
+                                                      {% endif %}
+                                                    </div>
+                                                    <div class="form-check">
+                                                        {{ form.visible(class="form-check-input") }} {{
+                                                        form.visible.label(class="form-check-label") }}
+                                                    </div>
+                                                 
+                                                  </fieldset>
+                                                  <div class="form-group mb-2">
+                                                    {{ form.submit(class="  profile-edit-btn  btn-outline-primary") }}
+                                                  </div>
+                                                </form>
+                                        </div>
+                                    </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                          
+                        <input  type="button" value="Editar perfil" class="profile-edit-btn btn-outline-primary" id="btn"  >
+                      
+                    </div>
+                </div>
+                <div class="row-md-2">
+                    <br>
+                    <br>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-8 profile-head">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="open-tab" data-toggle="tab" href="#open" role="tab" aria-controls="open" aria-selected="true">Encuestas respondidas</a>
+                            </li>
+                            
+                        </ul>
+                        <div class="tab-content profile-tab" id="myTabContent">
+                            <div class="tab-pane fade show active" id="open" role="tabpanel" aria-labelledby="open-tab">
+                                        <div class="column">
+                                            <div class="row-md-5">
+                                            {% if lista_query!=0 %}
+                                            {% for query_encuesta in lista_query %}
+                                            {% for encuesta in query_encuesta %}
+                                            <article class="media content-section">
+                                                <div class="media-body">
+                                                    <div class="article-metadata">
+                                                        <small class="text-muted">
+                                                            created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
+                                                        </small>
+                                                        <small class="text-muted">
+                                                            estado: {{encuesta.estado}}
+                                                        </small>
+                                                    </div>
+                                                        <h2>
+                                                            <a class="article-title"
+                                                            href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                        </h2>
+                                                        <small class="text-muted">
+                                                            autor: {{encuesta.user_id}}
+                                                        </small>
+                                                    </div>
+                                                
+                                                </article>
+                                                {% endfor %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </div>  
+                                        </div>                                  
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+               
+   
+            </form> 
+            
+            
+        </div>
+     
+
+        {% endblock content %}

@@ -421,7 +421,10 @@ def resultados_encuesta(encuesta_id):
     
     for preg in preguntas:
         for i in range(len(map_preg_a_array_percent_resp_item[preg.id])):
-            map_preg_a_array_percent_resp_item[preg.id][i] = round(map_preg_a_array_percent_resp_item[preg.id][i] * 100 / map_respuestas_y_total[item.id][1], 1)
+            if map_respuestas_y_total[item.id][1] != 0:
+                map_preg_a_array_percent_resp_item[preg.id][i] = round(map_preg_a_array_percent_resp_item[preg.id][i] * 100 / map_respuestas_y_total[item.id][1], 1)
+            else:
+                map_preg_a_array_percent_resp_item[preg.id][i] = 0
 
     return render_template('resultado_encuesta.html', 
         title= 'Resultados Encuesta',

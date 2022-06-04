@@ -3,12 +3,8 @@
   defer
   src="{{url_for('static', filename='javascript/editar_encuesta.js')}}"
 ></script>
-{%endblock scripts%} {% block content %}
-<!-- Título -->
-<input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
-   <!--Descripción  -->
-<input id="encuesta_descr_{{encuesta.id}}" type="text" class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{encuesta.description}}'/>
-
+{%endblock scripts%} 
+{%block change_button%}
 {%if encuesta.estado == "publicada"%}
 <button
   type="button"
@@ -16,7 +12,7 @@
   data-toggle="modal"
   data-target="#deleteModal"
 >
-  Cerrar encuesta # {{ encuesta.id }}
+  Cerrar encuesta
 </button>
 {%endif%} 
 {%if encuesta.estado == "creada"%}
@@ -27,18 +23,30 @@
   <input
     class="btn btn-success"
     type="submit"
-    value="Publicar encuesta # {{ encuesta.id }}"
+    value="Publicar encuesta"
   />
 </form>
 {%endif%}
+{%endblock change_button%}
 
-
+{% block content %}
 <input type="file"
        id="image_of_encuesta_{{encuesta.id}}" 
        class="image_of_encuesta"
        name="static_file"
        accept="image/png, image/jpg">
-       
+     
+<!-- Título -->
+<div class="content-section w-100">
+<input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
+   <!--Descripción  -->
+<input id="encuesta_descr_{{encuesta.id}}" type="text" class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{encuesta.description}}'/>
+</div>
+
+
+
+
+  
 
 <!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
@@ -46,7 +54,7 @@
 {%for pregunta in preguntas%}
 <div class="d-flex" id="container_of_{{pregunta.id}}">
   
-  <div class="content-section w-85">
+  <div class="content-section w-100">
   <fieldset class="form-group mb-2">
     <input id="pregunta_{{pregunta.id}}" type="text" class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{pregunta.title}}'/>
   </fieldset>

@@ -430,9 +430,7 @@ def profile():
     lista_query= []
     encuest = {}
     for i in respuesta:
-        datet =  i.date
         encuest[i.date.strftime("%d/%m/%Y %H:%M:%S")] = i.id_encuesta
-        encRESP = Encuesta.query.filter_by(id = i.id_encuesta )
         #print(encRESP)}
     for i in encuest:
         print(encuest[i])

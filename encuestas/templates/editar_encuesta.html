@@ -6,6 +6,7 @@
 {%endblock scripts%} 
 {%block change_button%}
 {%if encuesta.estado == "publicada"%}
+
 <button
   type="button"
   class="btn btn-danger btn-sm m-1"
@@ -35,7 +36,9 @@
        class="image_of_encuesta"
        name="static_file"
        accept="image/png, image/jpg">
+<input type="file"
      
+       accept="image/png, image/jpg">   
 <!-- Título -->
 <div class="content-section w-100">
 <input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>

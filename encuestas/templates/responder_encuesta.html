@@ -18,17 +18,19 @@
         </legend>
       </fieldset>
         <ul>
-            {%for item in items%}
-            {%if pregunta.id == item.pregunta_id%}
-            <li style = "list-style-type: none;">
-              <input type="radio" value = "{{item.id}}">
-                {{item.description}}
-              </input>
-            </li>
-            {%endif%}
-            {%endfor%}
-
+          {%for item in items%}
+          {%if pregunta.id == item.pregunta_id%}
+          <li style = "list-style-type: none;">
+            <input type="radio" name='{{pregunta.id}}' value = "{{item.id}}">
+              {{item.description}}
+            </input<br>
+          </li>
+          {%endif%}
+          {%endfor%}
         </ul>
+
+
+
       {%endfor%}
       {{ respuesta_form.submit(class="btn btn-outline-info") }}
     </div>

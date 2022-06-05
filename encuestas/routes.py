@@ -40,6 +40,7 @@ def about():
     return render_template('about.html', title='About')
 
 @app.route("/responder_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
+@login_required
 def responder_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)

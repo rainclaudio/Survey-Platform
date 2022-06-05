@@ -8,7 +8,12 @@
 <input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
    <!--Descripción  -->
 <input id="encuesta_descr_{{encuesta.id}}" type="text" class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{encuesta.description}}'/>
-
+<input type="file"
+       id="image_of_encuesta_{{encuesta.id}}" 
+       class="image_of_encuesta"
+       name="static_file"
+       accept="image/png, image/jpg">
+       
 {%if encuesta.estado == "publicada"%}
 <button
   type="button"
@@ -19,26 +24,8 @@
   Cerrar encuesta # {{ encuesta.id }}
 </button>
 {%endif%} 
-{%if encuesta.estado == "creada"%}
-<form
-  action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
-  method="POST"
->
-  <input
-    class="btn btn-success"
-    type="submit"
-    value="Publicar encuesta # {{ encuesta.id }}"
-  />
-</form>
-{%endif%}
 
 
-<input type="file"
-       id="image_of_encuesta_{{encuesta.id}}" 
-       class="image_of_encuesta"
-       name="static_file"
-       accept="image/png, image/jpg">
-       
 
 <!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
@@ -64,6 +51,8 @@
     </li>
 
     {%endif%} {%endfor%}
+
+  
   </ul>
   {%if encuesta.estado == "creada"%}
   <button
@@ -90,6 +79,64 @@
    onclick="add_pregunta('{{encuesta.id}}')">Añadir Pregunta</a>
 {%endif%}
 
+<!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
+<label for = 'posttime'>Cuando?</label>
+<input            
+  type="datetime-local"
+  id = "post_time_{{encuesta.date_posted}}"     
+  value="{{encuesta.date_posted}}"
+/>    <!-- calendario y fechas -->
+
+
+<!--checkbox para publicar ahora-->
+<label for="check">Publicar ahora</label>
+<input type="checkbox" id="check" name="check" value="yes", onclick="hide();" checked>    
+
+<!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
+<script>      
+  const btn = document.querySelector('#btn');
+  var hidden = false;
+  function hide() {
+    hidden = !hidden;
+    if(hidden) {
+      document.getElementById('pub_button').style.visibility = 'hidden';
+    } else {
+      document.getElementById('pub_button').style.visibility = 'visible';
+    }
+  }
+
+  btn.addEventListener('click', (event) => {
+      let checkboxes = document.querySelectorAll('input[name="check"]:checked');
+      let values = [];
+      checkboxes.forEach((checkbox) => {
+          values.push(checkbox.value);
+      });
+      if (values == "yes"){       //aquí debería cambiarse
+        var date = new Date()
+        hora = date.getHours()  
+        minutos = date.getMinutes()
+      }else{
+        hora = encuesta.date_posted.getHours()
+        minutos = encuesta.date_posted.getMinutes()
+      }
+  });    
+</script>
+<!--botón de publicación-->
+{%if encuesta.estado == "creada"%}      
+  <form
+    action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
+    method="POST">
+    <input
+      id = "pub_button"
+      class="btn btn-success"
+      type="submit"
+      value="Publicar encuesta # {{ encuesta.id }}"
+    />
+  </form>
+{%endif%}
+
+
+<!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
 <!-- Modal -->
 <div
   class="modal fade"
@@ -130,7 +177,3 @@
 </div>
 {% endblock content %}
 
-
-    <!--
-    onclick="add_item('{{pregunta.id}}');"
-    --

@@ -3,7 +3,7 @@ body {
   font-weight: 400;
   background: #fafafa;
   color: #333;
-  margin-top: 5rem;
+  margin-top: 3.4rem;
   box-sizing: border-box;
 }
 html {
@@ -126,6 +126,9 @@ GAPS
 .w-85 {
   width: 90%;
 }
+.w-100 {
+  width: 100%;
+}
 .title-encuesta {
   outline: none;
   border-bottom: 0;
@@ -178,9 +181,9 @@ body {
 }
 
 body {
-  background: linear-gradient(-45deg, #ffffff, #cdd3d3, #ffffff);
+  background: linear-gradient(-45deg, #ffffff, #e4e4e4, #ffffff);
   background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+  animation: gradient 15s ease;
 }
 
 @keyframes gradient {
@@ -322,21 +325,26 @@ body {
 /*
 BUTTONS
 */
-
-.primary-button {
-  border: none;
+.brand-color {
   background-color: #006fff;
-  color: white;
+}
+.answer-button-size {
   width: 10rem;
   height: 2rem;
+}
+.primary-button {
+  border: none;
+  color: white;
+
   font-size: 1rem;
   border-radius: 3px;
 }
+
 .primary-button:hover {
   color: white;
 }
 .home-width {
-  min-width: 65rem !important;
+  /* min-width: 65rem !important; */
 }
 
 #canvasContainer {

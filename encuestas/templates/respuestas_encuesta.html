@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+<!-- Título -->
+<h2 class="border-bottom mb-4">
+    Respuestas de {{ encuesta.title}},  Fecha: {{ date_time}}
+</h2>
+
+<!-- Preguntas -->
+<div class="content-section ml-4">
+    {%for pregunta, res in preguntas | zip(respuestas)%}
+    <fieldset class="form-group">
+        <legend class="border-bottom">
+            {{pregunta.title}}
+        </legend>
+    </fieldset>
+    <ul>
+        {%for item in items%}
+        {%if pregunta.id == item.pregunta_id%}
+        {%if item.id == res.item_id%}
+        <li class="focusNode">
+            {{item.description}}
+        </li>
+        {%else%}
+        <li>
+            {{item.description}}
+        </li>
+        {%endif%}
+        {%endif%}
+        {%endfor%}
+    </ul>
+    {%endfor%}
+</div>
+{% endblock content %}
+

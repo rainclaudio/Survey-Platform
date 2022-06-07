@@ -72,7 +72,18 @@ document.querySelectorAll(".image_of_encuesta").forEach((item) => {
     );
   });
 });
-
+document.querySelectorAll(".posttime-encuesta").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log(
+      "has dejado el campo editar posttime encuesta: " + encuesta.value
+    );
+    console.log("el encuesta id: ", encuesta.id.split("post_time_")[1]);
+    var dataReply_updt_item = await update_post_time(
+      encuesta.id.split("post_time_")[1],
+      encuesta.value
+    );
+  });
+});
 /*********************************************************************/
 /*                        Request function                          */
 /********************************************************************/
@@ -186,6 +197,24 @@ async function update_item(item_id, description) {
   console.log(dataReply);
   return dataReply;
 }
+async function update_post_time(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_post_time_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      description: description,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+
+
 /*********************************************************************/
 /*                        Eliminación de campos                  */
 /********************************************************************/
@@ -388,3 +417,15 @@ async function add_pregunta(encuesta_id) {
   );
   content.insertBefore(div_container, add_pregunta_button);
 }
+
+//Función que revisa cada un minuto para publicar
+
+window.setInterval(function(hora, minutos){ 
+  var date = new Date(); 
+  if(date.getHours() >= hora && date.getMinutes() >= minutos){
+    if(encuesta.estado == "creada"){
+      //publicar (no cacho como)
+      alert("hola pooo");  //esto no va
+    }
+  }
+}, 60000); //60000 milisegundos (1 minuto)

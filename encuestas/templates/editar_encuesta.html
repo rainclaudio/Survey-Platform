@@ -3,9 +3,9 @@
   defer
   src="{{url_for('static', filename='javascript/editar_encuesta.js')}}"
 ></script>
-{%endblock scripts%} 
-{%block change_button%}
-{%if encuesta.estado == "publicada"%}
+
+{%endblock scripts%} {%block change_button%} {%if encuesta.estado ==
+"publicada"%}
 
 <button
   type="button"
@@ -15,94 +15,190 @@
 >
   Cerrar encuesta
 </button>
-{%endif%} 
-{%if encuesta.estado == "creada"%}
+{%endif%} {%if encuesta.estado == "creada"%}
 <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
   method="POST"
 >
-  <input
-    class="btn btn-success"
-    type="submit"
-    value="Publicar encuesta"
-  />
+  <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
-{%endif%}
-{%endblock change_button%}
-
-{% block content %}
+{%endif%} {%endblock change_button%} {% block content %}
 
 <div class="content-section mt-6">
   <label>Suba una imagen</label>
-  <br>
-  <input type="file"
-         id="image_of_encuesta_{{encuesta.id}}" 
-         class="image_of_encuesta"
-         name="static_file"
-         accept="image/png, image/jpg">
+  <br />
+  <input
+    type="file"
+    id="image_of_encuesta_{{encuesta.id}}"
+    class="image_of_encuesta"
+    name="static_file"
+    accept="image/png, image/jpg"
+  />
 </div>
+{%endif%} {%endblock change_button%} {% block content %}
+<input
+  type="file"
+  id="image_of_encuesta_{{encuesta.id}}"
+  class="image_of_encuesta"
+  name="static_file"
+  accept="image/png, image/jpg"
+/>
+<input type="file" accept="image/png, image/jpg" />
+>>>>>>> d99b36689230030287a9b4d4f6a8d812fa0d17ef
 <!-- Título -->
 <div class="content-section w-100">
-<input id="encuesta_{{encuesta.id}}" type="text" class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2" value = '{{encuesta.title}}'/>
-   <!--Descripción  -->
-<input id="encuesta_descr_{{encuesta.id}}" type="text" class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{encuesta.description}}'/>
+  <input
+    id="encuesta_{{encuesta.id}}"
+    type="text"
+    class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2"
+    value="{{encuesta.title}}"
+  />
+  <!--Descripción  -->
+  <input
+    id="encuesta_descr_{{encuesta.id}}"
+    type="text"
+    class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
+    value="{{encuesta.description}}"
+  />
 </div>
-
-
-
-
-  
 
 <!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
 <!-- TEST JAVASCRIPT AND FLASK -->
 {%for pregunta in preguntas%}
 <div class="d-flex" id="container_of_{{pregunta.id}}">
-  
   <div class="content-section w-100">
-  <fieldset class="form-group mb-2">
-    <input id="pregunta_{{pregunta.id}}" type="text" class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none" value = '{{pregunta.title}}'/>
-  </fieldset>
-  <ul id="list_of_{{pregunta.id}}" class="list-unstyled d-flex gap-3 flex-column">
-    {%for item in items%} {%if pregunta.id == item.pregunta_id%}
-    <li id="{{item.id}}"class="d-flex gap-3 align-items-center">
-      <ion-icon name="ellipse-outline"></ion-icon>
-      <input id="input_{{pregunta.id}}-item_{{item.id}}" type="text" class="item-preg w-85 border-left-0 border-right-0 border-top-0" value = '{{item.description}}'/>
-      <ion-icon
-        onclick="delete_item('{{pregunta.id}}','{{item.id}}',true);"
-        id="close_{{pregunta.id}}-item_{{item.id}}"
-        class="text-white bg-danger"
-        name="close-outline"
-      ></ion-icon>
-    </li>
+    <fieldset class="form-group mb-2">
+      <input
+        id="pregunta_{{pregunta.id}}"
+        type="text"
+        class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
+        value="{{pregunta.title}}"
+      />
+    </fieldset>
+    <ul
+      id="list_of_{{pregunta.id}}"
+      class="list-unstyled d-flex gap-3 flex-column"
+    >
+      {%for item in items%} {%if pregunta.id == item.pregunta_id%}
+      <li id="{{item.id}}" class="d-flex gap-3 align-items-center">
+        <ion-icon name="ellipse-outline"></ion-icon>
+        <input
+          id="input_{{pregunta.id}}-item_{{item.id}}"
+          type="text"
+          class="item-preg w-85 border-left-0 border-right-0 border-top-0"
+          value="{{item.description}}"
+        />
+        <ion-icon
+          onclick="delete_item('{{pregunta.id}}','{{item.id}}',true);"
+          id="close_{{pregunta.id}}-item_{{item.id}}"
+          class="text-white bg-danger"
+          name="close-outline"
+        ></ion-icon>
+      </li>
 
-    {%endif%} {%endfor%}
-  </ul>
-  {%if encuesta.estado == "creada"%}
-  <button
-    class="d-block p-1 bg-info text-white text-center w-25"
-    onclick="add_input_form('{{pregunta.id}}');"
-  >Añadir Item</button>
+      {%endif%} {%endfor%}
+    </ul>
+    {%if encuesta.estado == "creada"%}
+    <button
+      class="d-block p-1 bg-info text-white text-center w-25"
+      onclick="add_input_form('{{pregunta.id}}');"
+    >
+      Añadir Item
+    </button>
 
-  {%endif%}
+    {%endif%}
   </div>
-  <div class="content-section p-0 d-flex flex-column ">
-    <div class="h-100 p-3   d-flex  align-items-center border-left">
-      <ion-icon  onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')" name = "trash"></ion-icon>
+
+  <div class="content-section p-0 d-flex flex-column">
+    <div class="h-100 p-3 d-flex align-items-center border-left">
+      <ion-icon
+        onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')"
+        name="trash"
+      ></ion-icon>
     </div>
-    
+
     <!-- <div class="h-50 p-3 d-flex  align-items-center">
       <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
     </div> -->
   </div>
 </div>
-{%endfor%}
-
-{%if encuesta.estado == "creada"%}
-<a id="addPregunta" class="d-block  p-2 bg-primary text-white text-center"
-   onclick="add_pregunta('{{encuesta.id}}')">Añadir Pregunta</a>
+{%endfor%} {%if encuesta.estado == "creada"%}
+<a
+  id="addPregunta"
+  class="d-block p-2 bg-primary text-white text-center"
+  onclick="add_pregunta('{{encuesta.id}}')"
+  >Añadir Pregunta</a
+>
 {%endif%}
 
+<!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
+<label for="posttime">Cuando?</label>
+<input
+  type="datetime-local"
+  id="post_time_{{encuesta.date_posted}}"
+  value="{{encuesta.date_posted}}"
+/>
+<!-- calendario y fechas -->
+
+<!--checkbox para publicar ahora-->
+<label for="check">Publicar ahora</label>
+<input
+  type="checkbox"
+  id="check"
+  name="check"
+  value="yes"
+  ,
+  onclick="hide();"
+  checked
+/>
+
+<!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
+<script>
+  const btn = document.querySelector("#btn");
+  var hidden = false;
+  function hide() {
+    hidden = !hidden;
+    if (hidden) {
+      document.getElementById("pub_button").style.visibility = "hidden";
+    } else {
+      document.getElementById("pub_button").style.visibility = "visible";
+    }
+  }
+
+  btn.addEventListener("click", (event) => {
+    let checkboxes = document.querySelectorAll('input[name="check"]:checked');
+    let values = [];
+    checkboxes.forEach((checkbox) => {
+      values.push(checkbox.value);
+    });
+    if (values == "yes") {
+      //aquí debería cambiarse
+      var date = new Date();
+      hora = date.getHours();
+      minutos = date.getMinutes();
+    } else {
+      hora = encuesta.date_posted.getHours();
+      minutos = encuesta.date_posted.getMinutes();
+    }
+  });
+</script>
+<!--botón de publicación-->
+{%if encuesta.estado == "creada"%}
+<form
+  action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
+  method="POST"
+>
+  <input
+    id="pub_button"
+    class="btn btn-success"
+    type="submit"
+    value="Publicar encuesta # {{ encuesta.id }}"
+  />
+</form>
+{%endif%}
+
+<!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
 <!-- Modal -->
 <div
   class="modal fade"
@@ -142,8 +238,3 @@
   </div>
 </div>
 {% endblock content %}
-
-
-    <!--
-    onclick="add_item('{{pregunta.id}}');"
-    --

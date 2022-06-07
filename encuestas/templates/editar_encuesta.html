@@ -23,6 +23,19 @@
   <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
 {%endif%} {%endblock change_button%} {% block content %}
+
+<div class="content-section mt-6">
+  <label>Suba una imagen</label>
+  <br />
+  <input
+    type="file"
+    id="image_of_encuesta_{{encuesta.id}}"
+    class="image_of_encuesta"
+    name="static_file"
+    accept="image/png, image/jpg"
+  />
+</div>
+{%endif%} {%endblock change_button%} {% block content %}
 <input
   type="file"
   id="image_of_encuesta_{{encuesta.id}}"
@@ -31,6 +44,7 @@
   accept="image/png, image/jpg"
 />
 <input type="file" accept="image/png, image/jpg" />
+>>>>>>> d99b36689230030287a9b4d4f6a8d812fa0d17ef
 <!-- Título -->
 <div class="content-section w-100">
   <input
@@ -95,17 +109,18 @@
 
     {%endif%}
   </div>
+
   <div class="content-section p-0 d-flex flex-column">
-    <div class="h-50 p-3 d-flex align-items-center border-bottom">
+    <div class="h-100 p-3 d-flex align-items-center border-left">
       <ion-icon
         onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')"
         name="trash"
       ></ion-icon>
     </div>
 
-    <div class="h-50 p-3 d-flex align-items-center">
-      <ion-icon class onclick="" name="color-wand-outline"></ion-icon>
-    </div>
+    <!-- <div class="h-50 p-3 d-flex  align-items-center">
+      <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
+    </div> -->
   </div>
 </div>
 {%endfor%} {%if encuesta.estado == "creada"%}

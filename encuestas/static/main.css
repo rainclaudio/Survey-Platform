@@ -34,7 +34,7 @@ h6 {
 }
 
 .container {
-  max-width: 70%;
+  /* max-width: 70%; */
 }
 
 .content-section {
@@ -307,7 +307,7 @@ body {
   left: 0px;
   top: 0px;
   width: 257px;
-  height: 209px;
+  /* height: 209px; */
 }
 /****
 */
@@ -315,7 +315,7 @@ body {
   font-size: 1.6875rem;
 }
 .description-container {
-  min-width: 40rem;
+  /* min-width: 40rem; */
 }
 .font-description {
   font-size: 0.875rem;

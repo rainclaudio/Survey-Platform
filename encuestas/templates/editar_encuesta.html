@@ -4,8 +4,8 @@
   src="{{url_for('static', filename='javascript/editar_encuesta.js')}}"
 ></script>
 
-{%endblock scripts%} {%block change_button%} {%if encuesta.estado ==
-"publicada"%}
+{%endblock scripts%} {%block change_button%} {%if encuesta.estado
+=="publicada"%}
 
 <button
   type="button"
@@ -23,7 +23,6 @@
   <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
 {%endif%} {%endblock change_button%} {% block content %}
-
 <div class="content-section mt-6">
   <label>Suba una imagen</label>
   <br />
@@ -35,7 +34,6 @@
     accept="image/png, image/jpg"
   />
 </div>
-{%endif%} {%endblock change_button%} {% block content %}
 <input
   type="file"
   id="image_of_encuesta_{{encuesta.id}}"
@@ -43,8 +41,7 @@
   name="static_file"
   accept="image/png, image/jpg"
 />
-<input type="file" accept="image/png, image/jpg" />
->>>>>>> d99b36689230030287a9b4d4f6a8d812fa0d17ef
+
 <!-- Título -->
 <div class="content-section w-100">
   <input

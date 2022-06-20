@@ -34,13 +34,6 @@
     accept="image/png, image/jpg"
   />
 </div>
-<input
-  type="file"
-  id="image_of_encuesta_{{encuesta.id}}"
-  class="image_of_encuesta"
-  name="static_file"
-  accept="image/png, image/jpg"
-/>
 
 <!-- Título -->
 <div class="content-section w-100">
@@ -130,16 +123,16 @@
 {%endif%}
 
 <!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
-<label for="posttime">Cuando?</label>
+<!-- <label for="posttime">Cuando?</label>
 <input
   type="datetime-local"
   id="post_time_{{encuesta.date_posted}}"
   value="{{encuesta.date_posted}}"
 />
-<!-- calendario y fechas -->
+calendario y fechas -->
 
 <!--checkbox para publicar ahora-->
-<label for="check">Publicar ahora</label>
+<!-- <label for="check">Publicar ahora</label>
 <input
   type="checkbox"
   id="check"
@@ -148,7 +141,7 @@
   ,
   onclick="hide();"
   checked
-/>
+/> -->
 
 <!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
 <script>
@@ -182,7 +175,7 @@
 </script>
 <!--botón de publicación-->
 {%if encuesta.estado == "creada"%}
-<form
+<!-- <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
   method="POST"
 >
@@ -192,7 +185,7 @@
     type="submit"
     value="Publicar encuesta # {{ encuesta.id }}"
   />
-</form>
+</form> -->
 {%endif%}
 
 <!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->

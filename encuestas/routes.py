@@ -7,7 +7,7 @@ from datetime import datetime
 from encuestas import app,db, bcrypt
 
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
-from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
+from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta,ListaDifusion,UserInList
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 from PIL import Image
@@ -172,7 +172,26 @@ def editar_encuesta(encuesta_id):
         
 ###########################################
 # Probando Javascript con flask
+@app.route('/crear_lista_difusion',methods=['GET','POST'])
+#http://127.0.0.1:5000/crear_lista_difusion
+def crear_lista_difusion():
+    encuestados = User.query.filter_by(tipo = False)
+    # ListaDifusion.__table__.create(db.engine)
+    listas = ListaDifusion.query.all()
+    usuarios_en_listas = UserInList.query.all()
+    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba')
+    # db.session.add(lista)
+    # db.session.commit()
 
+    # ListaDifusion.__table__.drop(db.engine)
+    # encuestado_especifico = User.query.filter_by(id = 1)
+    # lista  = ListaDifusion.query.filter_by(id = 1)
+
+    # usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
+    # db.session.add(usuario_en_lista)
+    # db.session.commit()
+
+    return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
 
 # CRUD ENCUESTA
 @app.route('/update_pregunta_test',methods=['POST'])

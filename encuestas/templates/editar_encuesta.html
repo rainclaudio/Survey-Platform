@@ -4,8 +4,8 @@
   src="{{url_for('static', filename='javascript/editar_encuesta.js')}}"
 ></script>
 
-{%endblock scripts%} {%block change_button%} {%if encuesta.estado ==
-"publicada"%}
+{%endblock scripts%} {%block change_button%} {%if encuesta.estado
+=="publicada"%}
 
 <button
   type="button"
@@ -23,7 +23,6 @@
   <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
 {%endif%} {%endblock change_button%} {% block content %}
-
 <div class="content-section mt-6">
   <label>Suba una imagen</label>
   <br />
@@ -35,16 +34,7 @@
     accept="image/png, image/jpg"
   />
 </div>
-{%endif%} {%endblock change_button%} {% block content %}
-<input
-  type="file"
-  id="image_of_encuesta_{{encuesta.id}}"
-  class="image_of_encuesta"
-  name="static_file"
-  accept="image/png, image/jpg"
-/>
-<input type="file" accept="image/png, image/jpg" />
->>>>>>> d99b36689230030287a9b4d4f6a8d812fa0d17ef
+
 <!-- Título -->
 <div class="content-section w-100">
   <input
@@ -133,16 +123,16 @@
 {%endif%}
 
 <!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
-<label for="posttime">Cuando?</label>
+<!-- <label for="posttime">Cuando?</label>
 <input
   type="datetime-local"
   id="post_time_{{encuesta.date_posted}}"
   value="{{encuesta.date_posted}}"
 />
-<!-- calendario y fechas -->
+calendario y fechas -->
 
 <!--checkbox para publicar ahora-->
-<label for="check">Publicar ahora</label>
+<!-- <label for="check">Publicar ahora</label>
 <input
   type="checkbox"
   id="check"
@@ -151,7 +141,7 @@
   ,
   onclick="hide();"
   checked
-/>
+/> -->
 
 <!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
 <script>
@@ -185,7 +175,7 @@
 </script>
 <!--botón de publicación-->
 {%if encuesta.estado == "creada"%}
-<form
+<!-- <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
   method="POST"
 >
@@ -195,7 +185,7 @@
     type="submit"
     value="Publicar encuesta # {{ encuesta.id }}"
   />
-</form>
+</form> -->
 {%endif%}
 
 <!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->

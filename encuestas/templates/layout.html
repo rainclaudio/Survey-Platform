@@ -53,14 +53,14 @@
             <div class="navbar-nav">
               {%block change_button%}
               {% if current_user.is_authenticated and current_user.tipo =='1' %}
-              <a class="nav-item text-white nav-link btn primary-button brand-color d-flex align-items-center gap-3" href="{{ url_for('crear_encuesta')}}">
-                <ion-icon class = "aligm-middle"name="add-outline"></ion-icon>
-                <span>
-                  Crear Encuesta
-                </span>
+               <a class="nav-item text-white nav-link btn primary-button brand-color d-flex align-items-center gap-3" href="{{ url_for('crear_encuesta')}}">
+                  <ion-icon class = "aligm-middle"name="add-outline"></ion-icon>
+                  <span>
+                    Crear Encuesta
+                  </span>
               </a>
               {% endif %}
-              {%endblock%}
+              {%endblock change_button%}
              
               {% if current_user.is_authenticated %}
               <a class="nav-item text-secondary nav-link  btn-link px-3 me-2" href="{{ url_for('profile') }}">Perfil</a>

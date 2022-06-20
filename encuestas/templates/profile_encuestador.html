@@ -171,7 +171,7 @@
                                                     </div>
                                                         <h2>
                                                             <a class="article-title"
-                                                            href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id)}}"
+                                                            href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"
                                                            > <h3>{{ encuesta.title }} </h3></a>
                                                         </h2>
                                                         <small class="text-muted">
@@ -230,7 +230,7 @@
                                             </div>
                                                 <h2>
                                                     <a class="article-title"
-                                                    href="{{ url_for('editar_encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                    href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
                                                 </h2>
                                                 <small class="text-muted">
                                                     autor: {{encuesta.user_id}}

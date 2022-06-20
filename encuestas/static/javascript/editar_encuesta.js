@@ -214,7 +214,6 @@ async function update_post_time(encuesta_id, description) {
   return dataReply;
 }
 
-
 /*********************************************************************/
 /*                        Eliminación de campos                  */
 /********************************************************************/
@@ -412,7 +411,7 @@ async function add_pregunta(encuesta_id) {
   <ion-icon  onclick="delete_pregunta(${dataReply.id}, ${encuesta_id})" name = "trash"></ion-icon>
 </div>
 <div class="h-50 p-3 d-flex  align-items-center">
-<ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
+
 </div></div>`
   );
   content.insertBefore(div_container, add_pregunta_button);
@@ -420,12 +419,12 @@ async function add_pregunta(encuesta_id) {
 
 //Función que revisa cada un minuto para publicar
 
-window.setInterval(function(hora, minutos){ 
-  var date = new Date(); 
-  if(date.getHours() >= hora && date.getMinutes() >= minutos){
-    if(encuesta.estado == "creada"){
+window.setInterval(function (hora, minutos) {
+  var date = new Date();
+  if (date.getHours() >= hora && date.getMinutes() >= minutos) {
+    if (encuesta.estado == "creada") {
       //publicar (no cacho como)
-      alert("hola pooo");  //esto no va
+      alert("hola pooo"); //esto no va
     }
   }
 }, 60000); //60000 milisegundos (1 minuto)

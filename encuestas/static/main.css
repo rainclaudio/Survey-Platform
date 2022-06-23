@@ -143,6 +143,10 @@ GAPS
   outline: none;
   border-bottom: 1px solid #444;
 }
+.description-encuesta {
+  border-bottom: 0;
+  transition: border-bottom 0.1s linear;
+}
 .pregunta-encuesta {
   font-size: 1.5rem;
   outline: none;
@@ -182,7 +186,7 @@ body {
 }
 
 body {
-  background: linear-gradient(-45deg, #ffffff, #e4e4e4, #ffffff);
+  background: linear-gradient(-45deg, #ffffff, #f4f4f4, #ffffff);
   background-size: 400% 400%;
   animation: gradient 15s ease;
 }

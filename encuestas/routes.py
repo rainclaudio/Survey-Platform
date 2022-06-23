@@ -1,9 +1,12 @@
+from collections import UserDict
 from fileinput import filename
 from re import A
 from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
+
+from sqlalchemy import and_
 from encuestas import app,db, bcrypt
 
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
@@ -179,7 +182,7 @@ def crear_lista_difusion():
     # ListaDifusion.__table__.create(db.engine)
     listas = ListaDifusion.query.all()
     usuarios_en_listas = UserInList.query.all()
-    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba')
+    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.username)
     # db.session.add(lista)
     # db.session.commit()
 
@@ -192,6 +195,87 @@ def crear_lista_difusion():
     # db.session.commit()
 
     return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
+
+@app.route("/editar_lista/<int:lista_id>", methods=['GET', 'POST'])
+def editar_lista(lista_id):
+    lista = ListaDifusion.query.get_or_404(lista_id)
+
+
+    # obtención de los usuarios en lista
+    ids_encuestados_en_lista = UserInList.query.filter_by(lista_id = lista_id)
+    id_users = []
+    for enc in ids_encuestados_en_lista:
+        id_users.append(enc.user_id)
+    print(id_users)
+   
+
+    # total encuestados que no están en lista
+    total_encuestados = User.query.filter(and_(User.id.not_in(id_users),User.tipo == False))
+    # total encuestados en la lista
+    encuestados_en_lista = User.query.filter(User.id.in_(id_users))
+
+    return render_template('editar_lista.html', 
+        title= 'Editar lista',
+        lista = lista,
+        total_encuestados = total_encuestados,
+        encuestados_en_lista = encuestados_en_lista
+    )
+#  crud lista
+@app.route('/add_user_in_list',methods=['POST'])
+def add_user_in_list():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    lista_id = dataGet['lista_id']   
+    user_id = dataGet['user_id']
+
+
+    usuario_en_lista = UserInList(lista_id = lista_id, user_id = user_id)
+    db.session.add(usuario_en_lista)
+    db.session.commit()
+
+    # Respuesta
+    reply = {"status":"success","lista: ": usuario_en_lista.lista_id, "usuario: " : usuario_en_lista.user_id}
+    return jsonify(reply) 
+
+@app.route('/delete_user_in_list', methods= ['POST'])
+def delete_user_in_list():
+
+    # obtener data recibida  
+    dataGet = request.get_json(force=True)
+    user_id = dataGet['user_id']
+    lista_id = dataGet['lista_id']
+    
+    tupla = UserInList.query.filter_by(user_id = user_id,lista_id = lista_id).first_or_404()
+    # Creación de datos 
+    db.session.delete(tupla)
+    db.session.commit()
+    # respuesta
+    reply = {"status": "deleted successfully"}
+   
+    return jsonify(reply)
+@app.route('/update_title_list',methods=['POST'])
+def update_title_list():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    lista = ListaDifusion.query.get_or_404(dataGet['lista_id'])
+    lista.title = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": lista.id, "description" : lista.title}
+    return jsonify(reply)
+
+@app.route('/update_description_list',methods=['POST'])
+def update_description_list():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    lista = ListaDifusion.query.get_or_404(dataGet['lista_id'])
+    lista.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": lista.id, "description" : lista.description}
+    return jsonify(reply)
+
+
 
 # CRUD ENCUESTA
 @app.route('/update_pregunta_test',methods=['POST'])

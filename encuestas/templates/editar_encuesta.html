@@ -1,3 +1,5 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+
 {% extends "layout.html" %} {%block scripts%}
 <script
   defer
@@ -22,6 +24,8 @@
 >
   <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
+
+
 {%endif%} {%endblock change_button%} {% block content %}
 <div class="content-section mt-6">
   <label>Suba una imagen</label>
@@ -32,8 +36,35 @@
     class="image_of_encuesta"
     name="static_file"
     accept="image/png, image/jpg"
-  />
+  /></div>
+
+  <div class="content-section mt-6">
+    <label>Seleccione una categoría</label>
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle bg-dark" id="encuesta_c{{encuesta.id}}"  type="button" value="{{encuesta.categoria}}" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">
+      {{encuesta.categoria}}
+      <span class="caret"  ></span>
+    </button>
+    <ul class="dropdown-menu"   aria-labelledby="dropdownMenuButton">
+      <li><a class="dropdown-item"  href="#">Autos, Motos y Otros</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"    href="#">Vestuario</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"  href="#">Hogar</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"   href="#">Belleza y Cuidado Personal</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"    href="#">Deportes y Fitness</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"    href="#">Computación y electrónica</a></li>
+      <div class="dropdown-divider"></div>
+      <li><a class="dropdown-item"    href="#">Vida Social</a></li>
+    </ul>
+  </div>
 </div>
+</div>
+
+ 
 
 <!-- Título -->
 <div class="content-section w-100">
@@ -190,6 +221,8 @@ calendario y fechas -->
 
 <!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
 <!-- Modal -->
+
+
 <div
   class="modal fade"
   id="deleteModal"
@@ -227,4 +260,5 @@ calendario y fechas -->
     </div>
   </div>
 </div>
+
 {% endblock content %}

@@ -174,6 +174,21 @@ def editar_encuesta(encuesta_id):
 # Probando Javascript con flask
 
 
+
+
+# CRUD CATEGORIA
+@app.route('/update_categoria_test',methods=['POST'])
+def update_categoria_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.categoria = dataGet['categoria']
+    db.session.commit()
+    # Respuesta
+ 
+    reply = {"status":"success","id": encuesta.id, "categoria" : encuesta.categoria}
+    return jsonify(reply)
+
 # CRUD ENCUESTA
 @app.route('/update_pregunta_test',methods=['POST'])
 def update_pregunta_test():
@@ -185,6 +200,7 @@ def update_pregunta_test():
     # Respuesta
     reply = {"status":"success","id": pregunta.id, "description" : pregunta.title}
     return jsonify(reply)
+
 
 
 @app.route('/add_item_test',methods=['POST'])

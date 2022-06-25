@@ -32,13 +32,7 @@ async function update_cat(encuesta_id, categoria) {
 }
 
 
-$(".dropdown-menu li a").click(function(){
-  
-  var selText = $(this).text();
-  update_cat('{{encuesta.id}}',selText )
-  console.log(selText)
-  $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-});
+
 
 
 /********************************************************************/

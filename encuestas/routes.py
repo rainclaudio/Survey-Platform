@@ -182,7 +182,9 @@ def update_categoria_test():
     # obtener la data que se ha recibido
     dataGet = request.get_json(force=True)
     encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    print(encuesta)
     encuesta.categoria = dataGet['categoria']
+    print(encuesta.categoria)
     db.session.commit()
     # Respuesta
  

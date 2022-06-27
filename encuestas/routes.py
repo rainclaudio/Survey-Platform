@@ -25,6 +25,8 @@ def home():
     # pregunta, la cantidad de respuestas entregadas por la query la divido
     # entre la cantidad de preguntas de la encuesta y listo.
 
+    #esto deberia estar solo en mi rama.
+
     cant_respuestas = {}    
     for encuesta in encuestas:
         aux = Respuesta.query.filter(Respuesta.id_encuesta == encuesta.id).count()

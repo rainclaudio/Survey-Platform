@@ -1,9 +1,13 @@
+{% extends "layout.html" %} {%block scripts%}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 
-{% extends "layout.html" %} {%block scripts%}
 <script
   defer
   src="{{url_for('static', filename='javascript/editar_encuesta.js')}}"
+></script>
+<script
+  defer
+  src="{{url_for('static', filename='javascript/editar_encuesta_part_lista.js')}}"
 ></script>
 
 {%endblock scripts%} {%block change_button%} {%if encuesta.estado
@@ -24,142 +28,242 @@
 >
   <input class="btn btn-success" type="submit" value="Publicar encuesta" />
 </form>
-
-
 {%endif%} {%endblock change_button%} {% block content %}
-<div class="content-section mt-6">
-  <label>Suba una imagen</label>
-  <br />
-  <input
-    type="file"
-    id="image_of_encuesta_{{encuesta.id}}"
-    class="image_of_encuesta"
-    name="static_file"
-    accept="image/png, image/jpg"
-  /></div>
-
-  <div class="content-section mt-6">
-    <label>Seleccione una categoría</label>
-  <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle bg-dark" id="encuesta_c{{encuesta.id}}"  type="button" value="{{encuesta.categoria}}" data-toggle="dropdown" aria-haspopup="true"  aria-expanded="false">
-      {{encuesta.categoria}}
-      <span class="caret"  ></span>
-    </button>
-    <ul class="dropdown-menu"   aria-labelledby="dropdownMenuButton">
-      <li><a class="dropdown-item"  href="#">Autos, Motos y Otros</a></li>
-      <div class="dropdown-divider"></div>
-      <li><a class="dropdown-item"    href="#">Vestuario</a></li>
-      <div class="dropdown-divider"></div>
-      <li><a class="dropdown-item"  href="#">Gastronomía</a></li>
-      <div class="dropdown-divider"></div>
-      <li><a class="dropdown-item"    href="#">Deportes y Fitness</a></li>
-      <div class="dropdown-divider"></div>
-      <li><a class="dropdown-item"    href="#">Electrónica</a></li>
-
-    </ul>
-  </div>
-</div>
-</div>
-
- <script>
-  $(".dropdown-menu li a").click(function(){
-  
-  var selText = $(this).text();
-  update_cat('{{encuesta.id}}',selText )
-  console.log(selText)
-  $(this).parents('.dropdown').find('.dropdown-toggle').html(selText+' <span class="caret"></span>');
-});
- </script>
-
-<!-- Título -->
-<div class="content-section w-100">
-  <input
-    id="encuesta_{{encuesta.id}}"
-    type="text"
-    class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2"
-    value="{{encuesta.title}}"
-  />
-  <!--Descripción  -->
-  <input
-    id="encuesta_descr_{{encuesta.id}}"
-    type="text"
-    class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
-    value="{{encuesta.description}}"
-  />
-</div>
-
-<!-- TEST JAVASCRIPT AND FLASK -->
-<!-- TEST JAVASCRIPT AND FLASK -->
-<!-- TEST JAVASCRIPT AND FLASK -->
-{%for pregunta in preguntas%}
-<div class="d-flex" id="container_of_{{pregunta.id}}">
-  <div class="content-section w-100">
-    <fieldset class="form-group mb-2">
+<div class="row">
+  <div class="col-8">
+    <!-- Título -->
+    <div class="content-section border-left border-primary w-100">
       <input
-        id="pregunta_{{pregunta.id}}"
+        id="encuesta_{{encuesta.id}}"
         type="text"
-        class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
-        value="{{pregunta.title}}"
+        class="title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2"
+        value="{{encuesta.title}}"
       />
-    </fieldset>
-    <ul
-      id="list_of_{{pregunta.id}}"
-      class="list-unstyled d-flex gap-3 flex-column"
-    >
-      {%for item in items%} {%if pregunta.id == item.pregunta_id%}
-      <li id="{{item.id}}" class="d-flex gap-3 align-items-center">
-        <ion-icon name="ellipse-outline"></ion-icon>
-        <input
-          id="input_{{pregunta.id}}-item_{{item.id}}"
-          type="text"
-          class="item-preg w-85 border-left-0 border-right-0 border-top-0"
-          value="{{item.description}}"
-        />
-        <ion-icon
-          onclick="delete_item('{{pregunta.id}}','{{item.id}}',true);"
-          id="close_{{pregunta.id}}-item_{{item.id}}"
-          class="text-white bg-danger"
-          name="close-outline"
-        ></ion-icon>
-      </li>
+      <!--Descripción  -->
+      <input
+        id="encuesta_descr_{{encuesta.id}}"
+        type="text"
+        class="description-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
+        value="{{encuesta.description}}"
+      />
+    </div>
+    <div class="content-section border-left border-primary mt-8">
+      <label>Suba una imagen</label>
+      <br />
+      <input
+        type="file"
+        id="image_of_encuesta_{{encuesta.id}}"
+        class="image_of_encuesta"
+        name="static_file"
+        accept="image/png, image/jpg"
+      />
+    </div>
+    {%for pregunta in preguntas%}
+    <div class="d-flex" id="container_of_{{pregunta.id}}">
+      <div class="content-section border-left border-primary w-100">
+        <fieldset class="form-group mb-2">
+          <input
+            id="pregunta_{{pregunta.id}}"
+            type="text"
+            class="pregunta-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
+            value="{{pregunta.title}}"
+          />
+        </fieldset>
+        <ul
+          id="list_of_{{pregunta.id}}"
+          class="list-unstyled d-flex gap-3 flex-column"
+        >
+          {%for item in items%} {%if pregunta.id == item.pregunta_id%}
+          <li id="{{item.id}}" class="d-flex gap-3 align-items-center">
+            <ion-icon name="ellipse-outline"></ion-icon>
+            <input
+              id="input_{{pregunta.id}}-item_{{item.id}}"
+              type="text"
+              class="item-preg w-85 border-left-0 border-right-0 border-top-0"
+              value="{{item.description}}"
+            />
+            <ion-icon
+              onclick="delete_item('{{pregunta.id}}','{{item.id}}',true);"
+              id="close_{{pregunta.id}}-item_{{item.id}}"
+              class="text-white bg-danger"
+              name="close-outline"
+            ></ion-icon>
+          </li>
 
-      {%endif%} {%endfor%}
-    </ul>
-    {%if encuesta.estado == "creada"%}
-    <button
-      class="d-block p-1 bg-info text-white text-center w-25"
-      onclick="add_input_form('{{pregunta.id}}');"
-    >
-      Añadir Item
-    </button>
+          {%endif%} {%endfor%}
+        </ul>
+        {%if encuesta.estado == "creada"%}
+        <button
+          class="d-block p-1 bg-info border-0 text-white text-center w-25"
+          onclick="add_input_form('{{pregunta.id}}');"
+        >
+          Añadir Item
+        </button>
 
+        {%endif%}
+      </div>
+
+      <div class="content-section p-0 d-flex flex-column">
+        <div class="h-100 p-3 d-flex align-items-center border-left">
+          <ion-icon
+            onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')"
+            name="trash"
+          ></ion-icon>
+        </div>
+
+        <!-- <div class="h-50 p-3 d-flex  align-items-center">
+          <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
+        </div> -->
+      </div>
+    </div>
+    {%endfor%} {%if encuesta.estado == "creada"%}
+    <a
+      id="addPregunta"
+      class="d-block p-2 bg-primary text-white text-center"
+      onclick="add_pregunta('{{encuesta.id}}')"
+      >Añadir Pregunta</a
+    >
     {%endif%}
   </div>
+  <div class="col-4">
+    <div class="content-section">
+      <div class="d-flex align-items-middle gap-4">
+        <h3>Invitados</h3>
+      </div>
 
-  <div class="content-section p-0 d-flex flex-column">
-    <div class="h-100 p-3 d-flex align-items-center border-left">
-      <ion-icon
-        onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')"
-        name="trash"
-      ></ion-icon>
+      <p class="text-secondary">
+        Al momento de publicar esta encuesta, se les notificará a los
+        encuestados que aparecen en esta lista para que participen en ella
+      </p>
+      <h4>Miembros añadidos</h4>
+      <div
+        class="overflow-auto p-1 mb-4 mb-md-0 mr-md-3 bg-white d-flex gap-5 flex-column"
+        style="max-width: 30rem; max-height: 15rem"
+      >
+        <div>
+          <!-- TASK: RENDERIZAR USUARIOS INVITADOS: IMPORTANTE EL REMOVER user-->
+          <ul id="users-invited" class="list-unstyled d-flex flex-column gap-5">
+            <li
+              id="invited-user-[[PONER AQUÏ LA ID DEL USUARIO]]"
+              class="d-flex gap-5 justify-content-between"
+            >
+              <div class="d-flex gap-5 justify-content-between">
+                <img
+                  src="/static/profile_pics/profileof.png"
+                  class="rounded-circle"
+                  width="40"
+                  height="40"
+                />
+                <div class="d-flex flex-column">
+                  <h5 class="mb-0" style="font-size: 1rem">
+                    Almendra castillo
+                  </h5>
+                  <span class="text-secondary" style="font-size: 13px"
+                    >almendracastillo@gmail.com</span
+                  >
+                </div>
+              </div>
+
+              <div onclick="remove_user(inivitado.id)">
+                <svg
+                  version="1.1"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="15px"
+                  height="15px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g transform="matrix(1 0 0 1 -253 -7 )">
+                    <path
+                      d="M 14.6464646464646 11.2121212121212  C 14.8821548821549 11.4478114478114  15 11.7340067340067  15 12.0707070707071  C 15 12.4074074074074  14.8821548821549 12.6936026936027  14.6464646464646 12.9292929292929  L 12.9292929292929 14.6464646464646  C 12.6936026936027 14.8821548821549  12.4074074074074 15  12.0707070707071 15  C 11.7340067340067 15  11.4478114478114 14.8821548821549  11.2121212121212 14.6464646464646  L 7.5 10.9343434343434  L 3.78787878787879 14.6464646464646  C 3.55218855218855 14.8821548821549  3.26599326599327 15  2.92929292929293 15  C 2.59259259259259 15  2.30639730639731 14.8821548821549  2.07070707070707 14.6464646464646  L 0.353535353535354 12.9292929292929  C 0.117845117845118 12.6936026936027  0 12.4074074074074  0 12.0707070707071  C 0 11.7340067340067  0.117845117845118 11.4478114478114  0.353535353535354 11.2121212121212  L 4.06565656565657 7.5  L 0.353535353535354 3.78787878787879  C 0.117845117845118 3.55218855218855  0 3.26599326599327  0 2.92929292929293  C 0 2.59259259259259  0.117845117845118 2.3063973063973  0.353535353535354 2.07070707070707  L 2.07070707070707 0.353535353535354  C 2.30639730639731 0.117845117845117  2.59259259259259 0  2.92929292929293 0  C 3.26599326599327 0  3.55218855218855 0.117845117845117  3.78787878787879 0.353535353535354  L 7.5 4.06565656565657  L 11.2121212121212 0.353535353535354  C 11.4478114478114 0.117845117845117  11.7340067340067 0  12.0707070707071 0  C 12.4074074074074 0  12.6936026936027 0.117845117845117  12.9292929292929 0.353535353535354  L 14.6464646464646 2.07070707070707  C 14.8821548821549 2.3063973063973  15 2.59259259259259  15 2.92929292929293  C 15 3.26599326599327  14.8821548821549 3.55218855218855  14.6464646464646 3.78787878787879  L 10.9343434343434 7.5  L 14.6464646464646 11.2121212121212  Z "
+                      fill-rule="nonzero"
+                      fill="#d7d7d7"
+                      stroke="none"
+                      transform="matrix(1 0 0 1 253 7 )"
+                    />
+                  </g>
+                </svg>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!------------------------->
+      <!-- LISTAS DE DIFUSSION -->
+      <!------------------------->
+      <h4 class="mt-2 mb-0">Añadir</h4>
+      <div
+        class="overflow-auto p-1 bg-white d-flex flex-column gap-5"
+        style="max-width: 20rem; max-height: 15rem"
+      >
+        {% for lista in listas%}
+        <div class="border d-flex flex-column p-2 pl-0">
+          <div class="d-flex gap-2">
+            <div>
+              <h5 class="mb-0" style="font-size: 1.2rem">{{lista.title}}</h5>
+              <p class="text-muted mb-1" style="font-size: 0.8rem">
+                {{lista.description}}
+              </p>
+            </div>
+            <div class="d-flex align-items-start justify-content-end">
+              <a
+                id="addPregunta"
+                class="d-block p-1 rounded ml-3 bg-primary b-block text-white text-center"
+                style="font-size: 14px"
+                onclick="add_list_to_invited('{{encuesta.id}}','{{lista.id}}')"
+                >Añadir</a
+              >
+            </div>
+          </div>
+          <div id="div-users-in-list-{{lista.id}}">
+            <ul
+              id="users-of-{{lista.id}}"
+              class="list-unstyled d-flex flex-column gap-5"
+            >
+              {%for usuario in usuarios_con_id_lista%} {%if lista.id ==
+              usuario[0].lista_id%}
+              <li id="lista-{{lista.id}}-user-{{usuario[1].id}}">
+                <div class="d-flex gap-6">
+                  <img
+                    src="/static/profile_pics/{{usuario[1].image_file}}"
+                    class="rounded-circle"
+                    width="40"
+                    height="40"
+                  />
+                  <div class="d-flex flex-column">
+                    <h5 class="mb-0" style="font-size: 1rem">
+                      {{usuario[1].name}}
+                    </h5>
+                    <span class="text-secondary" style="font-size: 13px"
+                      >{{usuario[1].email}}</span
+                    >
+                  </div>
+                </div>
+              </li>
+              {%endif%} {%endfor%}
+            </ul>
+          </div>
+          <div class="d-flex gap-2 align-items-center">
+            <ion-icon
+              name="chevron-down-outline"
+              class="color-primary"
+            ></ion-icon>
+            <ion-icon
+              hidden
+              name="chevron-up-outline"
+              class="color-primary"
+            ></ion-icon>
+            <span class="text-primary" style="font-size: 0.8rem"
+              >15 Miembros</span
+            >
+          </div>
+        </div>
+        {% endfor%}
+      </div>
     </div>
-
-    <!-- <div class="h-50 p-3 d-flex  align-items-center">
-      <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
-    </div> -->
   </div>
-</div>
-{%endfor%} {%if encuesta.estado == "creada"%}
-<a
-  id="addPregunta"
-  class="d-block p-2 bg-primary text-white text-center"
-  onclick="add_pregunta('{{encuesta.id}}')"
-  >Añadir Pregunta</a
->
-{%endif%}
 
-<!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
-<!-- <label for="posttime">Cuando?</label>
+  <!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
+  <!-- <label for="posttime">Cuando?</label>
 <input
   type="datetime-local"
   id="post_time_{{encuesta.date_posted}}"
@@ -167,8 +271,8 @@
 />
 calendario y fechas -->
 
-<!--checkbox para publicar ahora-->
-<!-- <label for="check">Publicar ahora</label>
+  <!--checkbox para publicar ahora-->
+  <!-- <label for="check">Publicar ahora</label>
 <input
   type="checkbox"
   id="check"
@@ -178,9 +282,9 @@ calendario y fechas -->
   onclick="hide();"
   checked
 /> -->
-
+  <!-- 
 <!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
-<script>
+  <!-- <script>
   const btn = document.querySelector("#btn");
   var hidden = false;
   function hide() {
@@ -208,10 +312,10 @@ calendario y fechas -->
       minutos = encuesta.date_posted.getMinutes();
     }
   });
-</script>
-<!--botón de publicación-->
-{%if encuesta.estado == "creada"%}
-<!-- <form
+</script> -->
+  <!--botón de publicación-->
+  {%if encuesta.estado == "creada"%}
+  <!-- <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
   method="POST"
 >
@@ -222,48 +326,46 @@ calendario y fechas -->
     value="Publicar encuesta # {{ encuesta.id }}"
   />
 </form> -->
-{%endif%}
+  {%endif%}
 
-<!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
-<!-- Modal -->
-
-
-<div
-  class="modal fade"
-  id="deleteModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="deleteModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">
-          Desea cerrar la encuesta # {{ encuesta.id }}?
-        </h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Cancelar
-        </button>
-        <form
-          action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}"
-          method="POST"
-        >
-          <input class="btn btn-danger" type="submit" value="Confirmar" />
-        </form>
+  <!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">
+            Desea cerrar la encuesta # {{ encuesta.id }}?
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <form
+            action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}"
+            method="POST"
+          >
+            <input class="btn btn-danger" type="submit" value="Confirmar" />
+          </form>
+        </div>
       </div>
     </div>
   </div>
+  {% endblock content %}
 </div>
-
-{% endblock content %}

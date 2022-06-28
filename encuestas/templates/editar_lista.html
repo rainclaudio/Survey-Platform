@@ -1,0 +1,111 @@
+{% extends "layout.html" %} {%block scripts%}
+<script
+  defer
+  src="{{url_for('static', filename='javascript/editar_lista.js')}}"
+></script>
+
+{%endblock scripts%} {% block content %}
+<!-- Título -->
+<div class="content-section w-100">
+  <input
+    id="lista_{{lista.id}}"
+    type="text"
+    class="title-encuesta title w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none h2"
+    value="{{lista.title}}"
+  />
+  <!--Descripción  -->
+  <input
+    id="lista_descr_{{lista.id}}"
+    type="text"
+    class="description-encuesta description title-encuesta w-100 border-left-0 border-right-0 border-top-0 bg-transparent outline-none"
+    value="{{lista.description}}"
+  />
+</div>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Email</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody id="total-users">
+    {%for encuestado in total_encuestados%}
+    <tr id="user_{{encuestado.id}}">
+      <th scope="row">{{encuestado.id}}</th>
+      <td>{{encuestado.name}}</td>
+      <td>{{encuestado.email}}</td>
+      <td>
+        <button onclick="select_user('{{encuestado.id}}','{{lista.id}}')">
+          Añadir
+        </button>
+      </td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Email</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody id="users-in-list">
+    {%for encuestado in encuestados_en_lista%}
+    <tr id="user_{{encuestado.id}}">
+      <th scope="row">{{encuestado.id}}</th>
+      <td>{{encuestado.name}}</td>
+      <td>{{encuestado.email}}</td>
+      <td>
+        <button onclick="remove_user('{{encuestado.id}}','{{lista.id}}')">
+          Eliminar
+        </button>
+      </td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+
+<!-- <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">title</th>
+      <th scope="col">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for lista in listas%}
+    <tr>
+      <th scope="row">{{lista.id}}</th>
+      <td>{{lista.title}}</td>
+      <td>{{lista.description}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table> -->
+<!-- <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">usuario</th>
+      <th scope="col">registrado en</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for pertenencia in pertenencias%}
+    <tr>
+      <th scope="row">1</th>
+      <td>{{pertenencia.user_id}}</td>
+      <td>{{pertenencia.lista_id}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table> -->
+{% endblock content %}

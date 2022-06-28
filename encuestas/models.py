@@ -44,7 +44,6 @@ class Encuesta(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     preguntas = db.relationship('Pregunta', backref = 'content', lazy = True)
     estado =  db.Column(db.String(100), default = "creada")
-    categoria = db.Column(db.String(100),default = "Categoría" , nullable=False)
 class Pregunta(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)
@@ -63,3 +62,16 @@ class Respuesta(db.Model):
     id_usuario = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     id_encuesta = db.Column(db.Integer, db.ForeignKey('encuesta.id'), nullable = False)
     date = db.Column(db.DateTime, default = datetime.utcnow)
+
+class ListaDifusion(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    title = db.Column(db.String(100),nullable = False)
+    description = db.Column(db.String(1000), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
+
+class UserInList(db.Model):
+    id = db.Column(db.Integer,primary_key = True)
+    lista_id = db.Column(db.Integer, db.ForeignKey('lista_difusion.id'), nullable = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
+    __table_args__ = (db.UniqueConstraint('lista_id', 'user_id'), )
+    # __table_args__ = (db.PrimaryKeyConstrain('lista_id', 'user_id'))

@@ -82,6 +82,17 @@ def responder_encuesta(encuesta_id):
     )
 
 
+@app.route('/update_categoria_test',methods=['POST'])
+def update_categoria_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.categoria = dataGet['categoria']
+    db.session.commit()
+    # Respuesta
+
+    reply = {"status":"success","id": encuesta.id, "categoria" : encuesta.categoria}
+    return jsonify(reply)
 # ELIMINAR 
 @app.route("/crear_encuesta", methods=['GET', 'POST'])
 @login_required

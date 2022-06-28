@@ -32,6 +32,48 @@
 <div class="row">
   <div class="col-8">
     <!-- Título -->
+    <div class="content-section mt-6">
+      <label>Seleccione una categoría</label>
+      <div class="dropdown">
+        <button
+          class="btn btn-secondary dropdown-toggle bg-dark"
+          id="encuesta_c{{encuesta.id}}"
+          type="button"
+          value="{{encuesta.categoria}}"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{encuesta.categoria}}
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li><a class="dropdown-item"    href="#">Deportes y Fitness</a></li>
+          <div class="dropdown-divider"></div>
+          <li><a class="dropdown-item"  href="#">Autos, Motos y Otros</a></li>
+          <div class="dropdown-divider"></div>
+          <li><a class="dropdown-item"    href="#">Vestuario</a></li>
+          <div class="dropdown-divider"></div>
+          <li><a class="dropdown-item"  href="#">Gastronomía</a></li>
+          <div class="dropdown-divider"></div>
+          <li><a class="dropdown-item"   href="#">Electrónica</a></li>
+          <div class="dropdown-divider"></div>
+        </ul>
+        </ul>
+      </div>
+    </div>
+    <script>
+      $(".dropdown-menu li a").click(function () {
+        var selText = $(this).text();
+        update_cat("{{encuesta.id}}", selText);
+        console.log(selText);
+        $(this)
+          .parents(".dropdown")
+          .find(".dropdown-toggle")
+          .html(selText + ' <span class="caret"></span>');
+      });
+    </script>
+
     <div class="content-section border-left border-primary w-100">
       <input
         id="encuesta_{{encuesta.id}}"

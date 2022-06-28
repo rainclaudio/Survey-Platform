@@ -1,11 +1,20 @@
-
-console.log( document.querySelectorAll(".dropdown-toggle") );
-console.log('hola')
+console.log(document.querySelectorAll(".dropdown-toggle"));
+console.log("hola");
+// document.querySelectorAll(".dropdown-toggle").forEach((encuesta) => {
+//   encuesta.addEventListener("blur", async function () {
+//     console.log("has dejado el campo categoría " + encuesta.value);
+//     console.log("el encuesta id: ", encuesta.id.split("encuesta_c")[1]);
+//     var dataReply_updt_item = await update_cat(
+//       encuesta.id.split("encuesta_c")[1],
+//       encuesta.value
+//     );
+//   });
+// });
+console.log(document.querySelectorAll(".dropdown-toggle"));
+console.log("hola");
 document.querySelectorAll(".dropdown-toggle").forEach((encuesta) => {
   encuesta.addEventListener("blur", async function () {
-    console.log(
-      "has dejado el campo categoría " + encuesta.value
-    );
+    console.log("has dejado el campo categoría " + encuesta.value);
     console.log("el encuesta id: ", encuesta.id.split("encuesta_c")[1]);
     var dataReply_updt_item = await update_cat(
       encuesta.id.split("encuesta_c")[1],
@@ -31,17 +40,12 @@ async function update_cat(encuesta_id, categoria) {
   return dataReply;
 }
 
-
-
-
-
 /********************************************************************/
 /*                      Funciones Iniciales                         */
 /********************************************************************/
 // Añaden funcionalidad a la edición del
 //título de la encuesta,preguntas y
 //descripción de los items cuando estos son renderizados por primera vez
-
 
 document.querySelectorAll(".title-encuesta").forEach((encuesta) => {
   encuesta.addEventListener("blur", async function () {

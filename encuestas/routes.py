@@ -130,16 +130,29 @@ def encuesta(encuesta_id):
 def editar_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
-    print('numero de la encuesta: ' + str(encuesta_id) )
+    listas = ListaDifusion.query.filter_by(user_id = current_user.id)
+ 
     id_preguntas = []
+    id_listas = []
     for preg in preguntas:
         id_preguntas.append(preg.id)
-    print(id_preguntas)
+    for lista in listas:
+        id_listas.append(lista.id)
+
+    # se le hace un join con usuarios pertenecientes a una lista
+    # i.e: claudio, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    #      claudio, rainlaudio@gmail.com, profile.jpg, 6 (también a la lista 6)
+    #      manuel, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    #      julio, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    usuarios_con_id_lista = db.session.query(UserInList,User).join(User, UserInList.user_id == User.id).filter(UserInList.lista_id.in_(id_listas)).all()
+
+    # DEBUG
+    # for lis in usuarios_con_id_lista:
+    #         print(lis[0].user_id,lis[0].lista_id,lis[1].name, lis[1].image_file, lis[1].email)
+
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
     items_preguntas = []
     counter = 0
-    for item in items:
-        print(item.description)
 
     for preg in preguntas:
         for item in items:
@@ -147,9 +160,6 @@ def editar_encuesta(encuesta_id):
                 counter+= 1
         items_preguntas.append(counter)
         counter = 0
-
-    print(items_preguntas)
-
     total_pregs = len(id_preguntas)
     bool_items = 1
 
@@ -170,7 +180,9 @@ def editar_encuesta(encuesta_id):
         encuesta_form = encuesta_form,
         pregunta_form = pregunta_form,
         total_pregs = total_pregs,
-        bool_items = bool_items
+        bool_items = bool_items,
+        listas = listas,
+        usuarios_con_id_lista = usuarios_con_id_lista
     )
         
 ###########################################
@@ -182,7 +194,7 @@ def crear_lista_difusion():
     # ListaDifusion.__table__.create(db.engine)
     listas = ListaDifusion.query.all()
     usuarios_en_listas = UserInList.query.all()
-    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.username)
+    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
     # db.session.add(lista)
     # db.session.commit()
 

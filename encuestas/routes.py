@@ -1,13 +1,16 @@
+from collections import UserDict
 from fileinput import filename
 from re import A
 from textwrap import indent
 from turtle import title
 from flask import render_template, url_for, flash, redirect, request, jsonify
 from datetime import datetime
+
+from sqlalchemy import and_
 from encuestas import app,db, bcrypt
 
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
-from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta
+from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta,ListaDifusion,UserInList
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 from PIL import Image
@@ -127,16 +130,29 @@ def encuesta(encuesta_id):
 def editar_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
-    print('numero de la encuesta: ' + str(encuesta_id) )
+    listas = ListaDifusion.query.filter_by(user_id = current_user.id)
+ 
     id_preguntas = []
+    id_listas = []
     for preg in preguntas:
         id_preguntas.append(preg.id)
-    print(id_preguntas)
+    for lista in listas:
+        id_listas.append(lista.id)
+
+    # se le hace un join con usuarios pertenecientes a una lista
+    # i.e: claudio, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    #      claudio, rainlaudio@gmail.com, profile.jpg, 6 (también a la lista 6)
+    #      manuel, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    #      julio, rainlaudio@gmail.com, profile.jpg, 5 (pertenezco a la lista 5)
+    usuarios_con_id_lista = db.session.query(UserInList,User).join(User, UserInList.user_id == User.id).filter(UserInList.lista_id.in_(id_listas)).all()
+
+    # DEBUG
+    # for lis in usuarios_con_id_lista:
+    #         print(lis[0].user_id,lis[0].lista_id,lis[1].name, lis[1].image_file, lis[1].email)
+
     items = Item.query.filter(Item.pregunta_id.in_(id_preguntas))
     items_preguntas = []
     counter = 0
-    for item in items:
-        print(item.description)
 
     for preg in preguntas:
         for item in items:
@@ -144,9 +160,6 @@ def editar_encuesta(encuesta_id):
                 counter+= 1
         items_preguntas.append(counter)
         counter = 0
-
-    print(items_preguntas)
-
     total_pregs = len(id_preguntas)
     bool_items = 1
 
@@ -167,29 +180,114 @@ def editar_encuesta(encuesta_id):
         encuesta_form = encuesta_form,
         pregunta_form = pregunta_form,
         total_pregs = total_pregs,
-        bool_items = bool_items
+        bool_items = bool_items,
+        listas = listas,
+        usuarios_con_id_lista = usuarios_con_id_lista
     )
         
 ###########################################
 # Probando Javascript con flask
+@app.route('/crear_lista_difusion',methods=['GET','POST'])
+#http://127.0.0.1:5000/crear_lista_difusion
+def crear_lista_difusion():
+    encuestados = User.query.filter_by(tipo = False)
+    # ListaDifusion.__table__.create(db.engine)
+    listas = ListaDifusion.query.all()
+    usuarios_en_listas = UserInList.query.all()
+    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
+    # db.session.add(lista)
+    # db.session.commit()
+
+    # ListaDifusion.__table__.drop(db.engine)
+    # encuestado_especifico = User.query.filter_by(id = 1)
+    # lista  = ListaDifusion.query.filter_by(id = 1)
+
+    # usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
+    # db.session.add(usuario_en_lista)
+    # db.session.commit()
+
+    return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
+
+@app.route("/editar_lista/<int:lista_id>", methods=['GET', 'POST'])
+def editar_lista(lista_id):
+    lista = ListaDifusion.query.get_or_404(lista_id)
 
 
+    # obtención de los usuarios en lista
+    ids_encuestados_en_lista = UserInList.query.filter_by(lista_id = lista_id)
+    id_users = []
+    for enc in ids_encuestados_en_lista:
+        id_users.append(enc.user_id)
+    print(id_users)
+   
 
+    # total encuestados que no están en lista
+    total_encuestados = User.query.filter(and_(User.id.not_in(id_users),User.tipo == False))
+    # total encuestados en la lista
+    encuestados_en_lista = User.query.filter(User.id.in_(id_users))
 
-# CRUD CATEGORIA
-@app.route('/update_categoria_test',methods=['POST'])
-def update_categoria_test():
+    return render_template('editar_lista.html', 
+        title= 'Editar lista',
+        lista = lista,
+        total_encuestados = total_encuestados,
+        encuestados_en_lista = encuestados_en_lista
+    )
+#  crud lista
+@app.route('/add_user_in_list',methods=['POST'])
+def add_user_in_list():
     # obtener la data que se ha recibido
     dataGet = request.get_json(force=True)
-    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
-    print(encuesta)
-    encuesta.categoria = dataGet['categoria']
-    print(encuesta.categoria)
+    lista_id = dataGet['lista_id']   
+    user_id = dataGet['user_id']
+
+
+    usuario_en_lista = UserInList(lista_id = lista_id, user_id = user_id)
+    db.session.add(usuario_en_lista)
+    db.session.commit()
+
+    # Respuesta
+    reply = {"status":"success","lista: ": usuario_en_lista.lista_id, "usuario: " : usuario_en_lista.user_id}
+    return jsonify(reply) 
+
+@app.route('/delete_user_in_list', methods= ['POST'])
+def delete_user_in_list():
+
+    # obtener data recibida  
+    dataGet = request.get_json(force=True)
+    user_id = dataGet['user_id']
+    lista_id = dataGet['lista_id']
+    
+    tupla = UserInList.query.filter_by(user_id = user_id,lista_id = lista_id).first_or_404()
+    # Creación de datos 
+    db.session.delete(tupla)
+    db.session.commit()
+    # respuesta
+    reply = {"status": "deleted successfully"}
+   
+    return jsonify(reply)
+@app.route('/update_title_list',methods=['POST'])
+def update_title_list():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    lista = ListaDifusion.query.get_or_404(dataGet['lista_id'])
+    lista.title = dataGet['description']
     db.session.commit()
     # Respuesta
- 
-    reply = {"status":"success","id": encuesta.id, "categoria" : encuesta.categoria}
+    reply = {"status":"success","id": lista.id, "description" : lista.title}
     return jsonify(reply)
+
+@app.route('/update_description_list',methods=['POST'])
+def update_description_list():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    lista = ListaDifusion.query.get_or_404(dataGet['lista_id'])
+    lista.description = dataGet['description']
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": lista.id, "description" : lista.description}
+    return jsonify(reply)
+
+
 
 # CRUD ENCUESTA
 @app.route('/update_pregunta_test',methods=['POST'])
@@ -202,7 +300,6 @@ def update_pregunta_test():
     # Respuesta
     reply = {"status":"success","id": pregunta.id, "description" : pregunta.title}
     return jsonify(reply)
-
 
 
 @app.route('/add_item_test',methods=['POST'])

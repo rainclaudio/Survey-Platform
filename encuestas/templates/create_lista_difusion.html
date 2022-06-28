@@ -1,0 +1,57 @@
+{% extends "layout.html" %} {% block content %}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for encuestado in encuestados%}
+    <tr>
+      <th scope="row">{{encuestado.id}}</th>
+      <td>{{encuestado.name}}</td>
+      <td>{{encuestado.email}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">title</th>
+      <th scope="col">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for lista in listas%}
+    <tr>
+      <th scope="row">{{lista.id}}</th>
+      <td>{{lista.title}}</td>
+      <td>{{lista.description}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+<!-- <table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">usuario</th>
+      <th scope="col">registrado en</th>
+    </tr>
+  </thead>
+  <tbody>
+    {%for pertenencia in pertenencias%}
+    <tr>
+      <th scope="row">1</th>
+      <td>{{pertenencia.user_id}}</td>
+      <td>{{pertenencia.lista_id}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table> -->
+{% endblock content %}

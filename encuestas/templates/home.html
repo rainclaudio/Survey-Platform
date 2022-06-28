@@ -1,5 +1,16 @@
 {% extends "layout.html" %} {%block scripts%} {%endblock scripts%} {% block
 content %}
+<style>
+	hr { 
+	  display: block;
+	  margin-top: 0.5em;
+	  margin-bottom: 0.5em;
+	  margin-left: auto;
+	  margin-right: auto;
+	  border-style: inset;
+	  border-width: 1px;
+	} 
+	</style>
 <div style="width: 1200px">
 	<div style="margin-top: 17px; width: 250px; position:fixed; background-color: white; border-radius: 3px;">
 		<strong style="margin-top: 20px; height: 25px; font-size: larger; text-align: center; display: block;" >
@@ -9,12 +20,12 @@ content %}
 			Palabras clave
 			<input id="filterInput" class="form-control" type="text" style="width: 100%; border-radius: 3px; border-width: 1px; display: block;">
 		</div>
-		<div hidden style="margin: 15px;">
+		<div  hidden style="margin: 15px;">
 			Categoría
-			<ul style="padding-inline-start: 30px;">
+			<ul style="padding-inline-start: 50px;">
 				<li>
 					<input class="form-check-input" type="checkbox" name="categoria">
-					Deportes
+					Deportes y Fitness
 					</input>
 				</li>
 				<li>
@@ -24,12 +35,17 @@ content %}
 				</li>
 				<li>
 					<input class="form-check-input" type="checkbox" name="categoria">
-					Moda
+					Vestuario
 					</input>
 				</li>
 				<li>
 					<input class="form-check-input" type="checkbox" name="categoria">
-					Educación
+					Electrónica
+					</input>
+				</li>
+				<li>
+					<input class="form-check-input" type="checkbox" name="categoria">
+					Autos, Motos y Otros
 					</input>
 				</li>
 			</ul>
@@ -75,6 +91,7 @@ content %}
 		</script>
 	</div>
 	<div style="margin-left: 265px; position:absolute; width: 935px;">
+		<br> 
 		<article class="media content-section d-flex flex-column">
 			<ul id="lista" style="list-style: none;">
 				{% for encuesta in encuestas %}
@@ -112,6 +129,27 @@ content %}
 										<span style="font-size: 0.875rem">
 											{{ cant_respuestas[encuesta.id] }} respuestas
 										</span>
+										 
+										<div style="font-size: 0.875rem" >
+											{%if encuesta.categoria == "Deportes y Fitness"%}
+												<img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
+											{%endif%}
+											{%if encuesta.categoria == "Autos, Motos y Otros"%}
+												<img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
+											{%endif%}
+											{%if encuesta.categoria == "Vestuario"%}
+												<img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
+											{%endif%}
+											{%if encuesta.categoria == "Gastronomía"%}
+												<img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
+											{%endif%}
+											{%if encuesta.categoria == "Electrónica"%}
+												<img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
+											{%endif%}
+											{{  encuesta.categoria }}
+											<br> 
+										</div>
+										
 									</div>
 									<div class="d-flex gap-4 align-items-center">
 										<!-- Icono del reloj -->
@@ -156,6 +194,8 @@ content %}
 				{% endfor %}
 			</ul>
 		</article>
+		
 	</div>
 </div>
+
 {% endblock content %}

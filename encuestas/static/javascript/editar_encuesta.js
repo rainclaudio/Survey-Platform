@@ -1,9 +1,48 @@
+
+console.log( document.querySelectorAll(".dropdown-toggle") );
+console.log('hola')
+document.querySelectorAll(".dropdown-toggle").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log(
+      "has dejado el campo categoría " + encuesta.value
+    );
+    console.log("el encuesta id: ", encuesta.id.split("encuesta_c")[1]);
+    var dataReply_updt_item = await update_cat(
+      encuesta.id.split("encuesta_c")[1],
+      encuesta.value
+    );
+  });
+});
+
+async function update_cat(encuesta_id, categoria) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_categoria_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      categoria: categoria,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+
+
+
+
+
 /********************************************************************/
 /*                      Funciones Iniciales                         */
 /********************************************************************/
 // Añaden funcionalidad a la edición del
 //título de la encuesta,preguntas y
 //descripción de los items cuando estos son renderizados por primera vez
+
+
 document.querySelectorAll(".title-encuesta").forEach((encuesta) => {
   encuesta.addEventListener("blur", async function () {
     console.log(

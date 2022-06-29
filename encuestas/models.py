@@ -45,6 +45,8 @@ class Encuesta(db.Model):
     preguntas = db.relationship('Pregunta', backref = 'content', lazy = True)
     estado =  db.Column(db.String(100), default = "creada")
     categoria = db.Column(db.String(100),default = "Categoría" , nullable=False)
+    likes = db.Column(db.Integer, default = 0, nullable = False)
+    dislikes = db.Column(db.Integer, default = 0, nullable = False)
 class Pregunta(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     title = db.Column(db.String(100), nullable = False)

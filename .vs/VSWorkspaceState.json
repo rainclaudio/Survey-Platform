@@ -3,6 +3,7 @@
     "",
     "\\encuestas",
     "\\encuestas\\static",
+    "\\encuestas\\static\\javascript",
     "\\encuestas\\templates"
   ],
   "SelectedNode": "\\encuestas\\routes.py",

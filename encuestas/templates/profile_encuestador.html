@@ -153,7 +153,7 @@
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#close" role="tab" aria-controls="close" aria-selected="false">Encuestas cerradas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-indigo" id="profile-tab" data-toggle="tab" href="#lists" role="tab" aria-controls="close" aria-selected="false">Mis listas</a>
+                                <a class="nav-link text-indigo" id="list-tab" data-toggle="tab" href="#lists" role="tab" aria-controls="list" aria-selected="false">Mis listas</a>
                             </li>
                         </ul>
                         <div class="tab-content profile-tab" id="myTabContent">
@@ -337,7 +337,7 @@
                                     </div>  
                                 </div>                                  
                             </div>  
-                            <div class="tab-pane fade show active" id="lists" role="tabpanel" aria-labelledby="created-tab">
+                            <div class="tab-pane fade" id="lists" role="tabpanel" aria-labelledby="list-tab">
                                 <div class="column">
                                     <div class="row-md-8">
                                         {%for lista in listas%}

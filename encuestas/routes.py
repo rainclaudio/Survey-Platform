@@ -58,6 +58,7 @@ def responder_encuesta(encuesta_id):
 
     if respuesta_form.validate_on_submit():
         todas_respondidas = True
+
         for pregunta in preguntas:
             if str(type(request.form.get(f'{pregunta.id}'))) == "<class 'NoneType'>":
                 todas_respondidas = False
@@ -69,6 +70,12 @@ def responder_encuesta(encuesta_id):
                 item_id_seleccionado = request.form.get(f'{pregunta.id}')
                 respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id, id_usuario = current_user.username , id_encuesta =encuesta_id)
                 db.session.add(respuesta)
+            
+            #likes    
+            if respuesta_form.like.data:
+                encuesta.likes += 1
+            if respuesta_form.dislike.data:
+                encuesta.dislikes += 1
             db.session.commit()
             flash("¡Felicidades! Has respondido la encuesta " + str(encuesta.title), 'success')
             return redirect('/')

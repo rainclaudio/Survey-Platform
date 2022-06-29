@@ -202,20 +202,20 @@ def editar_encuesta(encuesta_id):
 #http://127.0.0.1:5000/crear_lista_difusion
 def crear_lista_difusion():
     encuestados = User.query.filter_by(tipo = False)
-    # ListaDifusion.__table__.create(db.engine)
+    #ListaDifusion.__table__.create(db.engine)
     listas = ListaDifusion.query.all()
     usuarios_en_listas = UserInList.query.all()
-    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
-    # db.session.add(lista)
-    # db.session.commit()
+    lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
+   # db.session.add(lista)
+   # db.session.commit()
 
-    # ListaDifusion.__table__.drop(db.engine)
-    # encuestado_especifico = User.query.filter_by(id = 1)
-    # lista  = ListaDifusion.query.filter_by(id = 1)
+    #ListaDifusion.__table__.drop(db.engine)
+    #encuestado_especifico = User.query.filter_by(id = 123a)
+    #lista  = ListaDifusion.query.filter_by(id = 1)
 
-    # usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
-    # db.session.add(usuario_en_lista)
-    # db.session.commit()
+    #usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
+   # db.session.add(usuario_en_lista)
+   # db.session.commit()
 
     return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
 

@@ -76,3 +76,7 @@ class UserInList(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'),nullable = False)
     __table_args__ = (db.UniqueConstraint('lista_id', 'user_id'), )
     # __table_args__ = (db.PrimaryKeyConstrain('lista_id', 'user_id'))
+    
+class UsuarioInvitado(db.Model):
+    id_us = db.Column(db.Integer, db.ForeignKey('user.id'),primary_key = True)
+    id_encuesta = db.Column(db.Integer, db.ForeignKey('encuesta.id'), nullable = False)

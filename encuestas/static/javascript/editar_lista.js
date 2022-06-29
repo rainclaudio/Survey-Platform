@@ -107,6 +107,7 @@ async function select_user(user_id, lista_id) {
 
   button_remove = document.createElement("button");
   button_remove.textContent = "Eliminar";
+  button_remove.classList = "btn btn-danger";
   button_remove.onclick = function () {
     remove_user(user_id, lista_id);
   };
@@ -134,6 +135,7 @@ async function remove_user(user_id, lista_id) {
   });
   button_add = document.createElement("button");
   button_add.textContent = "Añadir";
+  button_add.classList = "btn btn-success";
   button_add.onclick = function () {
     select_user(user_id, lista_id);
   };

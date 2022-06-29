@@ -58,6 +58,7 @@ def responder_encuesta(encuesta_id):
 
     if respuesta_form.validate_on_submit():
         todas_respondidas = True
+
         for pregunta in preguntas:
             if str(type(request.form.get(f'{pregunta.id}'))) == "<class 'NoneType'>":
                 todas_respondidas = False
@@ -69,6 +70,12 @@ def responder_encuesta(encuesta_id):
                 item_id_seleccionado = request.form.get(f'{pregunta.id}')
                 respuesta = Respuesta(item_id = item_id_seleccionado, pregunta_id = pregunta.id, id_usuario = current_user.username , id_encuesta =encuesta_id)
                 db.session.add(respuesta)
+            
+            #likes    
+            if respuesta_form.like.data:
+                encuesta.likes += 1
+            if respuesta_form.dislike.data:
+                encuesta.dislikes += 1
             db.session.commit()
             flash("¡Felicidades! Has respondido la encuesta " + str(encuesta.title), 'success')
             return redirect('/')
@@ -201,23 +208,20 @@ def editar_encuesta(encuesta_id):
 @app.route('/crear_lista_difusion',methods=['GET','POST'])
 #http://127.0.0.1:5000/crear_lista_difusion
 def crear_lista_difusion():
-    encuestados = User.query.filter_by(tipo = False)
-    # ListaDifusion.__table__.create(db.engine)
+
     listas = ListaDifusion.query.all()
     usuarios_en_listas = UserInList.query.all()
-    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
-    # db.session.add(lista)
-    # db.session.commit()
+    lista = ListaDifusion(title = 'Lista sin título',description =  'agregue una descripción', user_id = current_user.id)
+    db.session.add(lista)
+    db.session.commit()
 
-    # ListaDifusion.__table__.drop(db.engine)
-    # encuestado_especifico = User.query.filter_by(id = 1)
-    # lista  = ListaDifusion.query.filter_by(id = 1)
+  
 
-    # usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
-    # db.session.add(usuario_en_lista)
-    # db.session.commit()
+    # total encuestados que no están en lista
+    total_encuestados = User.query.filter(User.tipo == False)
+ 
 
-    return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
+    return render_template('editar_lista.html',title = 'Editar lista',total_encuestados = total_encuestados, lista = lista);
 
 @app.route("/editar_lista/<int:lista_id>", methods=['GET', 'POST'])
 def editar_lista(lista_id):
@@ -596,6 +600,10 @@ def profile():
     encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
     encCREATE = Encuesta.query.filter_by(user_id = current_user.username,estado = "creada" )
     encCLOSED = Encuesta.query.filter_by(user_id = current_user.username,estado = "cerrada" )
+
+    # listas de difusión del encuestador
+    listas = ListaDifusion.query.filter_by(user_id = current_user.id)
+
     TOTAL=len(encuest)
     TOTALC=0
     
@@ -616,7 +624,7 @@ def profile():
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
     
    
-    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys)
+    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys,listas = listas)
 
 @app.route("/logout")
 def logout():

@@ -201,23 +201,20 @@ def editar_encuesta(encuesta_id):
 @app.route('/crear_lista_difusion',methods=['GET','POST'])
 #http://127.0.0.1:5000/crear_lista_difusion
 def crear_lista_difusion():
-    encuestados = User.query.filter_by(tipo = False)
-    # ListaDifusion.__table__.create(db.engine)
+
     listas = ListaDifusion.query.all()
     usuarios_en_listas = UserInList.query.all()
-    # lista = ListaDifusion(title = 'Lista de prueba',description =  'hola esta es una lista de prueba', user_id = current_user.id)
-    # db.session.add(lista)
-    # db.session.commit()
+    lista = ListaDifusion(title = 'Lista sin título',description =  'agregue una descripción', user_id = current_user.id)
+    db.session.add(lista)
+    db.session.commit()
 
-    # ListaDifusion.__table__.drop(db.engine)
-    # encuestado_especifico = User.query.filter_by(id = 1)
-    # lista  = ListaDifusion.query.filter_by(id = 1)
+  
 
-    # usuario_en_lista = UserInList(lista_id = 1, user_id = 1)
-    # db.session.add(usuario_en_lista)
-    # db.session.commit()
+    # total encuestados que no están en lista
+    total_encuestados = User.query.filter(User.tipo == False)
+ 
 
-    return render_template('create_lista_difusion.html',encuestados = encuestados, listas = listas, pertenencias = usuarios_en_listas);
+    return render_template('editar_lista.html',title = 'Editar lista',total_encuestados = total_encuestados, lista = lista);
 
 @app.route("/editar_lista/<int:lista_id>", methods=['GET', 'POST'])
 def editar_lista(lista_id):

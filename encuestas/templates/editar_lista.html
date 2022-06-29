@@ -6,6 +6,7 @@
 
 {%endblock scripts%} {% block content %}
 <!-- Título -->
+
 <div class="content-section w-100">
   <input
     id="lista_{{lista.id}}"
@@ -21,56 +22,64 @@
     value="{{lista.description}}"
   />
 </div>
-
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Email</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody id="total-users">
-    {%for encuestado in total_encuestados%}
-    <tr id="user_{{encuestado.id}}">
-      <th scope="row">{{encuestado.id}}</th>
-      <td>{{encuestado.name}}</td>
-      <td>{{encuestado.email}}</td>
-      <td>
-        <button onclick="select_user('{{encuestado.id}}','{{lista.id}}')">
-          Añadir
-        </button>
-      </td>
-    </tr>
-    {%endfor%}
-  </tbody>
-</table>
-
-<table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Nombre</th>
-      <th scope="col">Email</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody id="users-in-list">
-    {%for encuestado in encuestados_en_lista%}
-    <tr id="user_{{encuestado.id}}">
-      <th scope="row">{{encuestado.id}}</th>
-      <td>{{encuestado.name}}</td>
-      <td>{{encuestado.email}}</td>
-      <td>
-        <button onclick="remove_user('{{encuestado.id}}','{{lista.id}}')">
-          Eliminar
-        </button>
-      </td>
-    </tr>
-    {%endfor%}
-  </tbody>
-</table>
+<div class="d-flex gap-9 justify-content-between">
+  <div class="content-section w-50">
+    <h2>Usuarios añadidos</h2>
+    <table id="example" class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Email</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody id="users-in-list">
+        {%for encuestado in encuestados_en_lista%}
+        <tr id="user_{{encuestado.id}}">
+          <td>{{encuestado.name}}</td>
+          <td>{{encuestado.email}}</td>
+          <td>
+            <button
+              class="btn btn-danger"
+              onclick="remove_user('{{encuestado.id}}','{{lista.id}}')"
+            >
+              Eliminar
+            </button>
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+  <div class="content-section w-50">
+    <h2>Usuarios dentro de la plataforma</h2>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Nombre</th>
+          <th scope="col">Email</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody id="total-users">
+        {%for encuestado in total_encuestados%}
+        <tr id="user_{{encuestado.id}}">
+          <td>{{encuestado.name}}</td>
+          <td>{{encuestado.email}}</td>
+          <td>
+            <button
+              class="btn btn-success"
+              onclick="select_user('{{encuestado.id}}','{{lista.id}}')"
+            >
+              Añadir
+            </button>
+          </td>
+        </tr>
+        {%endfor%}
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <!-- <table class="table">
   <thead class="thead-dark">

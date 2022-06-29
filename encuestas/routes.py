@@ -596,6 +596,10 @@ def profile():
     encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
     encCREATE = Encuesta.query.filter_by(user_id = current_user.username,estado = "creada" )
     encCLOSED = Encuesta.query.filter_by(user_id = current_user.username,estado = "cerrada" )
+
+    # listas de difusión del encuestador
+    listas = ListaDifusion.query.filter_by(user_id = current_user.id)
+
     TOTAL=len(encuest)
     TOTALC=0
     
@@ -616,7 +620,7 @@ def profile():
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
     
    
-    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys)
+    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys,listas = listas)
 
 @app.route("/logout")
 def logout():

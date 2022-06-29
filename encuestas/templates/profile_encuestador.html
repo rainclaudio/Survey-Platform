@@ -152,6 +152,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#close" role="tab" aria-controls="close" aria-selected="false">Encuestas cerradas</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-indigo" id="profile-tab" data-toggle="tab" href="#lists" role="tab" aria-controls="close" aria-selected="false">Mis listas</a>
+                            </li>
                         </ul>
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show " id="open" role="tabpanel" aria-labelledby="open-tab">
@@ -331,6 +334,27 @@
                                         
                                         </article>
                                         {% endfor %}
+                                    </div>  
+                                </div>                                  
+                            </div>  
+                            <div class="tab-pane fade show active" id="lists" role="tabpanel" aria-labelledby="created-tab">
+                                <div class="column">
+                                    <div class="row-md-8">
+                                        {%for lista in listas%}
+                                        <div class=" border content-section">
+
+                                              
+                                                    <h2>
+                                                        <a class="article-title text-indigo"
+                                                        href="{{ url_for('editar_lista', lista_id=lista.id)}}"> <h3>{{ lista.title }} </h3></a>
+                                                    </h2>
+                                                    <div class="">
+                                                        <p class="text-muted">{{lista.description}}</p>
+                                                    </div>
+                 
+                                                </div>
+                                            </div>
+                                        {%endfor%}
                                     </div>  
                                 </div>                                  
                             </div>  

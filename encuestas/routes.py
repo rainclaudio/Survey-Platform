@@ -10,11 +10,12 @@ from sqlalchemy import and_
 from encuestas import app,db, bcrypt
 
 from encuestas.forms import CrearEncuestaForm, CrearItemForm, CrearPreguntaForm, RegistrationForm, LoginForm, EnviarRespuestaForm, updatePerfil
-from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta,ListaDifusion,UserInList
+from encuestas.models import Encuesta, Item, User, Post, Pregunta, Respuesta,ListaDifusion,UserInList,UsuarioInvitado
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 from PIL import Image
 import os
+import numpy as np
 import random
 
 @app.route("/")
@@ -149,7 +150,27 @@ def editar_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     preguntas = Pregunta.query.filter_by(encuesta_id = encuesta_id)
     listas = ListaDifusion.query.filter_by(user_id = current_user.id)
- 
+    invitados_id = UsuarioInvitado.query.filter_by(id_encuesta = encuesta_id)
+    
+    nombre_inv  = []
+    mail_inv = []
+    image_inv = []
+    id_inv = []
+    
+
+    for i in invitados_id:
+        usuario = User.query.filter_by(id = i.id_user).first()
+        nombre_inv.append(usuario.name)
+        mail_inv.append(usuario.email)
+        image_inv.append(usuario.image_file)
+        id_inv.append(usuario.id)
+    
+    print('mail',mail_inv)
+    cantidad = np.arange(len(nombre_inv))
+    print(cantidad)
+    not_vacio = False
+    if cantidad !=[]:
+        not_vacio = True
     id_preguntas = []
     id_listas = []
     for preg in preguntas:
@@ -200,7 +221,14 @@ def editar_encuesta(encuesta_id):
         total_pregs = total_pregs,
         bool_items = bool_items,
         listas = listas,
-        usuarios_con_id_lista = usuarios_con_id_lista
+        usuarios_con_id_lista = usuarios_con_id_lista,
+        id_inv = id_inv,
+        nombre_inv  = nombre_inv,
+        mail_inv = mail_inv,
+        image_inv = image_inv,
+        cantidad=cantidad,
+        not_vacio = not_vacio
+
     )
         
 ###########################################
@@ -233,7 +261,7 @@ def editar_lista(lista_id):
     id_users = []
     for enc in ids_encuestados_en_lista:
         id_users.append(enc.user_id)
-    print(id_users)
+    
    
 
     # total encuestados que no están en lista
@@ -255,7 +283,7 @@ def add_user_in_list():
     lista_id = dataGet['lista_id']   
     user_id = dataGet['user_id']
 
-
+     
     usuario_en_lista = UserInList(lista_id = lista_id, user_id = user_id)
     db.session.add(usuario_en_lista)
     db.session.commit()
@@ -263,6 +291,37 @@ def add_user_in_list():
     # Respuesta
     reply = {"status":"success","lista: ": usuario_en_lista.lista_id, "usuario: " : usuario_en_lista.user_id}
     return jsonify(reply) 
+
+@app.route('/add_invitado_encuesta',methods=['GET','POST'])
+def add_invitado_encuesta():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta_id = dataGet['encuesta_id']   
+    user_id = dataGet['email']
+    usuario = User.query.filter_by(email = user_id ).first_or_404()
+    exists = db.session.query(UsuarioInvitado.id).filter_by(id_user = usuario.id).first() is not None
+    
+    if exists:
+        print(exists)
+    else: 
+        usuario_invitado = UsuarioInvitado(id_user = usuario.id, id_encuesta = encuesta_id)
+        db.session.add(usuario_invitado)
+
+    #test  = UsuarioInvitado.query.filter_by(email = user_id ).first()
+    #if test:
+    #    print('existe')
+    #else:
+    usuario_invitado = UsuarioInvitado(id_user = usuario.id, id_encuesta = encuesta_id)
+    db.session.add(usuario_invitado)
+    db.session.commit()
+
+ 
+
+
+ 
+    # Respuesta
+    reply = {"status":"success","lista: ": encuesta_id, "usuario: " : usuario.id}
+    return  jsonify(reply) 
 
 @app.route('/delete_user_in_list', methods= ['POST'])
 def delete_user_in_list():

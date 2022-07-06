@@ -24,27 +24,27 @@ content %}
 			Categoría
 			<ul style="padding-inline-start: 50px;">
 				<li>
-					<input class="form-check-input" type="checkbox" name="categoria">
+					<input id="checkbox0" class="form-check-input" type="checkbox" name="Deportes y Fitness">
 					Deportes y Fitness
 					</input>
 				</li>
 				<li>
-					<input class="form-check-input" type="checkbox" name="categoria">
+					<input id="checkbox1" class="form-check-input" type="checkbox" name="Gastronomía">
 					Gastronomía
 					</input>
 				</li>
 				<li>
-					<input class="form-check-input" type="checkbox" name="categoria">
+					<input id="checkbox2" class="form-check-input" type="checkbox" name="Vestuario">
 					Vestuario
 					</input>
 				</li>
 				<li>
-					<input class="form-check-input" type="checkbox" name="categoria">
+					<input id="checkbox3" class="form-check-input" type="checkbox" name="Electrónica">
 					Electrónica
 					</input>
 				</li>
 				<li>
-					<input class="form-check-input" type="checkbox" name="categoria">
+					<input id="checkbox4" class="form-check-input" type="checkbox" name="Autos, Motos y Otros">
 					Autos, Motos y Otros
 					</input>
 				</li>
@@ -55,38 +55,89 @@ content %}
 			<button hidden class="mt-auto btn primary-button brand-color answer-button-size" style="width: 102.5px; margin-left: 15px; display: inline-block; padding-top: 5px;">Aplicar</button>
 		</div>
 		<script>
-			// Get input element
-			let filterInput = document.getElementById('filterInput');
-
-			// Add event listener
+			var filterInput = document.getElementById('filterInput');
 			filterInput.addEventListener('input', filterNames);
 
-			function filterNames(){
-				// Get value of input
-				let filterValue = document.getElementById('filterInput').value.toUpperCase();
+			var checkInput = [];
+			for (let i = 0; i < 5; i++)
+			{
+				var element = document.getElementById('checkbox' + String(i))
+				element.addEventListener('change', filterCategories)
+				checkInput.push(element);
+			}
+			
+			enc_title_dict = {{ enc_title | safe }};
+			enc_cat_dict = {{ enc_cat | safe }};
 
-				// Get names ul
-				let ul = document.getElementById('lista');
-				// Get lis from ul
-				let li = ul.querySelectorAll('li.encuesta-listada');
+			function filterNames()
+			{
+				var filterValue = filterInput.value.toUpperCase();
+			
+				var ul = document.getElementById('lista');
+				var li = ul.querySelectorAll('li.encuesta-listada');
 
-				// Loop through collection-item lis
-				for(let i = 0;i < li.length;i++){
-					let str = li[i].id;
+				for(var i = 0;i < li.length;i++)
+				{
+					var title = enc_title_dict[li[i].id];
 					// If matched
-					if(str.toUpperCase().indexOf(filterValue) > -1){
+					if(title.toUpperCase().indexOf(filterValue) > -1)
+					{
 						li[i].style.display = '';
-					} else {
+					}
+					else
+					{
 						li[i].style.display = 'none';
 					}
 				}
 			}
 
-			function clearInput(){
-				// Get value of input
-				let filterValue = document.getElementById('filterInput');
-				filterValue.value = "";
+			function filterCategories()
+			{
 				filterNames();
+				var ul = document.getElementById('lista');
+				var li = ul.querySelectorAll('li.encuesta-listada');
+
+				var selected = 0;
+				for (var index = 0; index < checkInput.length; index++)
+				{
+					if(checkInput[index].checked == true)
+						selected++;
+				}
+
+				if(selected > 0)
+				{	
+					var categoriesToFilter = [];
+					for (var i = 0; i < checkInput.length; i++)
+					{
+						if(checkInput[i].checked == true)
+							categoriesToFilter.push(checkInput[i].name)
+					}
+					
+					for(var i = 0; i < li.length; i++)
+					{
+						var cat = enc_cat_dict[li[i].id];
+						if(li[i].style.display == '' && categoriesToFilter.includes(cat))
+						{
+							li[i].style.display = '';
+						}
+						else
+						{
+							li[i].style.display = 'none';
+						}
+					}
+				}
+			}
+
+			function clearInput()
+			{
+				var filterValue = document.getElementById('filterInput');
+				filterValue.value = "";
+				
+				for (let i = 0; i < 5; i++)
+					checkInput[i].checked = false;
+
+				filterNames();
+				filterCategories();
 			}
 		</script>
 	</div>
@@ -95,7 +146,7 @@ content %}
 		<article class="media content-section d-flex flex-column">
 			<ul id="lista" style="list-style: none;">
 				{% for encuesta in encuestas %}
-				<li class="encuesta-listada" id="{{ encuesta.title }}">
+				<li class="encuesta-listada" id="{{ encuesta.id }}">
 					<div class="">
 						<div class="d-flex gap-5">
 							<img src="static/survey_pics/{{encuesta.image_file}}" class="img" />

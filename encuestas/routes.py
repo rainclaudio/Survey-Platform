@@ -29,13 +29,17 @@ def home():
     # pregunta, la cantidad de respuestas entregadas por la query la divido
     # entre la cantidad de preguntas de la encuesta y listo.
 
+    enc_title = {}
+    enc_categorie = {}
     cant_respuestas = {}    
     for encuesta in encuestas:
         aux = Respuesta.query.filter(Respuesta.id_encuesta == encuesta.id).count()
         aux = int(aux / len(encuesta.preguntas)) 
         cant_respuestas[encuesta.id] = aux
+        enc_title[encuesta.id] = encuesta.title
+        enc_categorie[encuesta.id] = encuesta.categoria
 
-    return render_template('home.html', encuestas = encuestas, cant_respuestas = cant_respuestas)
+    return render_template('home.html', encuestas = encuestas, cant_respuestas = cant_respuestas, enc_title = enc_title, enc_cat = enc_categorie)
 
 
 

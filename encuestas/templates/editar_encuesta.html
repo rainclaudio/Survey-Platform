@@ -1,3 +1,5 @@
+ 
+
 {% extends "layout.html" %} {%block scripts%}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 
@@ -183,30 +185,32 @@
         style="max-width: 30rem; max-height: 15rem"
       >
         <div>
+          
           <!-- TASK: RENDERIZAR USUARIOS INVITADOS: IMPORTANTE EL REMOVER user-->
           <ul id="users-invited" class="list-unstyled d-flex flex-column gap-5">
+            {% if not_vacio %} {% for i in cantidad %}
             <li
-              id="invited-user-[[PONER AQUÏ LA ID DEL USUARIO]]"
+              id="invited-user-{{id_inv[i]}}"
               class="d-flex gap-5 justify-content-between"
             >
               <div class="d-flex gap-5 justify-content-between">
                 <img
-                  src="/static/profile_pics/profileof.png"
+                  src="/static/profile_pics/{{image_inv[i]}}"
                   class="rounded-circle"
                   width="40"
                   height="40"
                 />
                 <div class="d-flex flex-column">
                   <h5 class="mb-0" style="font-size: 1rem">
-                    Almendra castillo
+                    {{nombre_inv[i] }}
                   </h5>
                   <span class="text-secondary" style="font-size: 13px"
-                    >almendracastillo@gmail.com</span
+                    >{{mail_inv[i] }}</span
                   >
                 </div>
               </div>
 
-              <div onclick="remove_user(inivitado.id)">
+              <div onclick="remove_user('{{id_inv[i]}}')">
                 <svg
                   version="1.1"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -226,6 +230,7 @@
                 </svg>
               </div>
             </li>
+            {% endfor %} {% endif %}
           </ul>
         </div>
       </div>
@@ -337,7 +342,6 @@ calendario y fechas -->
       document.getElementById("pub_button").style.visibility = "visible";
     }
   }
-
   btn.addEventListener("click", (event) => {
     let checkboxes = document.querySelectorAll('input[name="check"]:checked');
     let values = [];
@@ -411,3 +415,4 @@ calendario y fechas -->
   </div>
   {% endblock content %}
 </div>
+ 

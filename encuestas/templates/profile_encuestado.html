@@ -181,6 +181,38 @@
                                             </div>  
                                         </div>                                  
                             </div>
+                            <div class="tab-pane fade show  " id="invi" role="tabpanel" aria-labelledby="invi-tab">
+                                <div class="column">
+                                    <div class="row-md-5">
+                                    {% if lista_query!=0 %}
+                                    {% for query_encuesta,key in lista_query | zip(keys)  %}
+                                    {% for encuesta in query_encuesta%}
+                                    <article class="media content-section">
+                                        <div class="media-body">
+                                            <div class="article-metadata">
+                                                <small class="text-muted">
+                                                    created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
+                                                </small>
+                                                <small class="text-muted">
+                                                    estado: {{encuesta.estado}}
+                                                </small>
+                                            </div>
+                                                <h2>
+                                                    <a class="article-title"
+                                                    href="{{ url_for('respuestas_encuesta', date_time=key ,encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                </h2>
+                                                <small class="text-muted">
+                                                    autor: {{encuesta.user_id}}
+                                                </small>
+                                            </div>
+                                        
+                                        </article>
+                                        {% endfor %}
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>  
+                                </div>                                  
+                    </div>
                             
                             
                         </div>

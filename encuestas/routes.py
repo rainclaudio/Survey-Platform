@@ -610,7 +610,7 @@ def guardarfoto(form_picture):
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
-
+    
     form = updatePerfil()
     respuesta = Respuesta.query.filter_by(id_usuario = current_user.username)
 
@@ -654,7 +654,7 @@ def profile():
     if len(lista_query) ==0:
         lista_query = 0
 
-    
+    encuestas_invitaciones = UsuarioInvitado.query.filter_by(id_user =  current_user.username)
     
     encPUBLIC = Encuesta.query.filter_by(user_id = current_user.username,estado = "publicada" )
     encCREATE = Encuesta.query.filter_by(user_id = current_user.username,estado = "creada" )

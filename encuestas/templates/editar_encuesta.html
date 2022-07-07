@@ -210,7 +210,7 @@
                 </div>
               </div>
 
-              <div onclick="remove_user('{{id_inv[i]}}')">
+              <div onclick="remove_user('{{id_inv[i]}}', '{{encuesta.id}}')">
                 <svg
                   version="1.1"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -237,11 +237,27 @@
       <!------------------------->
       <!-- LISTAS DE DIFUSSION -->
       <!------------------------->
+      <p>
+  <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+    Link with href
+  </a>
+  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    Button with data-target
+  </button>
+</p>
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+  </div>
+</div>
       <h4 class="mt-2 mb-0">Añadir</h4>
       <div
         class="overflow-auto p-1 bg-white d-flex flex-column gap-5"
         style="max-width: 20rem; max-height: 15rem"
       >
+
+      
+
         {% for lista in listas%}
         <div class="border d-flex flex-column p-2 pl-0">
           <div class="d-flex gap-2">
@@ -261,7 +277,7 @@
               >
             </div>
           </div>
-          <div id="div-users-in-list-{{lista.id}}">
+          <div class="collapse" id="div-users-in-list-{{lista.id}}">
             <ul
               id="users-of-{{lista.id}}"
               class="list-unstyled d-flex flex-column gap-5"
@@ -290,18 +306,15 @@
             </ul>
           </div>
           <div class="d-flex gap-2 align-items-center">
-            <ion-icon
-              name="chevron-down-outline"
-              class="color-primary"
-            ></ion-icon>
-            <ion-icon
-              hidden
-              name="chevron-up-outline"
-              class="color-primary"
-            ></ion-icon>
-            <span class="text-primary" style="font-size: 0.8rem"
-              >15 Miembros</span
-            >
+              <button class="btn bg-white p-0" type="button"  data-toggle="collapse" data-target="#div-users-in-list-{{lista.id}}" aria-expanded="false" aria-controls="#div-users-in-list-{{lista.id}}">
+                <ion-icon
+                  name="chevron-down-outline"
+                  class="text-primary"
+                ></ion-icon>
+                <span class="text-primary" style="font-size: 0.8rem"
+                  >Mostrar Miembros</span
+                >
+              </button>
           </div>
         </div>
         {% endfor%}

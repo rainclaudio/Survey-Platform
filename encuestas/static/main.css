@@ -369,3 +369,7 @@ BUTTONS
   width: 50%;
   float: left;
 }
+.btn:focus {
+  outline: none !important;
+  box-shadow: none;
+}

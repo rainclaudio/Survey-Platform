@@ -80,5 +80,5 @@ class EnviarRespuestaForm(FlaskForm):
 
 #esto era una forma que se me había ocurrido antes, no lo quiero borrar por si acaso
 class PublicarEncuestaForm(FlaskForm):
-    submit = SubmitField('Enviar Respuesta')
+    submit = SubmitField('Enviar Respuesta')  
     now = BooleanField('Publicar Ahora')

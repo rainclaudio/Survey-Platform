@@ -47,6 +47,9 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+
+
+
 @app.route("/responder_encuesta/<int:encuesta_id>", methods=['GET', 'POST'])
 @login_required
 def responder_encuesta(encuesta_id):
@@ -319,10 +322,7 @@ def add_invitado_encuesta():
     db.session.add(usuario_invitado)
     db.session.commit()
 
- 
-
-
- 
+  
     # Respuesta
     reply = {"status":"success","lista: ": encuesta_id, "usuario: " : usuario.id}
     return  jsonify(reply) 
@@ -343,6 +343,25 @@ def delete_user_in_list():
     reply = {"status": "deleted successfully"}
    
     return jsonify(reply)
+
+
+@app.route('/delete_user_of_encuesta', methods= ['POST'])
+def delete_user_of_encuesta():
+
+    # obtener data recibida  
+    dataGet = request.get_json(force=True)
+    user_id = dataGet['user_id']
+    encuesta_id = dataGet['encuesta_id']
+    
+    tupla = UsuarioInvitado.query.filter_by(id_user = user_id,id_encuesta = encuesta_id).first_or_404()
+    # Creación de datos 
+    db.session.delete(tupla)
+    db.session.commit()
+    # respuesta
+    reply = {"status": "deleted successfully"}
+   
+    return jsonify(reply)
+
 @app.route('/update_title_list',methods=['POST'])
 def update_title_list():
     # obtener la data que se ha recibido
@@ -598,6 +617,14 @@ def publicar_encuesta(encuesta_id,total_pregs,bool_items):
         flash('Your post #' + str(encuesta_id) + ' has been posted!', 'success')
         return redirect(url_for('home'))
 
+@app.route("/responder_y_delete_invitacion/<int:encuesta_id>", methods=['GET','POST'])
+@login_required
+def responder_y_delete_invitacion(encuesta_id):
+    to_delete = UsuarioInvitado.query.filter_by(id_user = current_user.id, id_encuesta = encuesta_id).first();
+    db.session.delete(to_delete)
+    db.session.commit()
+    return redirect(url_for('responder_encuesta', encuesta_id=encuesta_id))
+    
 def guardarfoto(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
@@ -617,6 +644,7 @@ def profile():
 
     form = updatePerfil()
     respuesta = Respuesta.query.filter_by(id_usuario = current_user.username)
+    invitaciones = UsuarioInvitado.query.filter_by(id_user = current_user.id)
 
 
 
@@ -635,21 +663,41 @@ def profile():
         form.name.data = current_user.name
         form.email.data = current_user.email
 
-
-
+    invis1 ={}
+    id_encuestas = []
+    query_invi = 0
+    for i in invitaciones:
+        encuesta = Encuesta.query.get_or_404(i.id_encuesta)
+        if encuesta.estado == 'publicada':
+            # invis1[i.id_encuesta] =encuesta
+            id_encuestas.append(i.id_encuesta)
+            query_invi = 1
     lista_query= []
     encuest = {}
-    for i in respuesta:
 
+    encuestas_parainvitado = Encuesta.query.filter(Encuesta.id.in_(id_encuestas))
+
+
+    #se edito acá
+    for i in respuesta:
         datet =  i.date
-        encuest[i.date.strftime("%d-%m-%Y %H:%M:%S")] = i.id_encuesta
+        encuest[i.id_encuesta] = i.id_encuesta
         encRESP = Encuesta.query.filter_by(id = i.id_encuesta )
 
         #print(encRESP)}
+    invis=[]
+    for i in invis1:
+        print('aaaa',invis1[i])
+        invis.append(Encuesta.query.filter_by(id = invis1[i] ))
+    if len(invis) ==0:
+        invis = 0
 
+
+    print('las invis',invis )
 
 
     keys = list(encuest.keys())
+    keys2 = list(invis1.keys())
 
 
     for i in encuest:
@@ -665,7 +713,7 @@ def profile():
     encCLOSED = Encuesta.query.filter_by(user_id = current_user.username,estado = "cerrada" )
 
     # listas de difusión del encuestador
-    listas = ListaDifusion.query.filter_by(user_id = current_user.id)
+    listas = ListaDifusion.query.filter_by( user_id = current_user.id)
 
     TOTAL=len(encuest)
     TOTALC=0
@@ -685,9 +733,9 @@ def profile():
             TOTALC=TOTALC+1
         
     image_file = url_for('static', filename= 'profile_pics/' + current_user.image_file)
-    
+    print(invis)
    
-    return render_template(perfil_usuario, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys,listas = listas)
+    return render_template(perfil_usuario, keys2=keys2, title='Profile', image_file=image_file , encPUBLIC = encPUBLIC, form = form, encCREATE=encCREATE, encCLOSED=encCLOSED, TOTAL =TOTAL+TOTALC, TOTALC  =  TOTALC, tipo=tipo, lista_query=lista_query, keys = keys,listas = listas, query_invi=query_invi, invis=encuestas_parainvitado)
 
 @app.route("/logout")
 def logout():

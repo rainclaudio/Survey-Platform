@@ -144,7 +144,9 @@
                             <li class="nav-item">
                                 <a class="nav-link active" id="open-tab" data-toggle="tab" href="#open" role="tab" aria-controls="open" aria-selected="true">Encuestas respondidas</a>
                             </li>
-                            
+                            <li class="nav-item">
+                                <a class="nav-link" id="invi-tab" data-toggle="tab" href="#invi" role="tab" aria-controls="invi"   aria-selected="false">Invitaciones a responder</a>
+                            </li>
                         </ul>
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="open" role="tabpanel" aria-labelledby="open-tab">
@@ -179,6 +181,36 @@
                                             </div>  
                                         </div>                                  
                             </div>
+                            <div class="tab-pane fade show  " id="invi" role="tabpanel" aria-labelledby="invi-tab">
+                                <div class="column">
+                                    <div class="row-md-5">
+                                    {% if query_invi!=0 %}
+                                    
+                                    {% for encuesta in invis%}
+                                    <article class="media content-section">
+                                        <div class="media-body">
+                                            <div class="article-metadata">
+                                             
+                                                <small class="text-muted">
+                                                    estado: {{encuesta.estado}}
+                                                </small>
+                                            </div>
+                                                <h2>
+                                                    <a class="article-title"
+                                                    href="{{ url_for('responder_y_delete_invitacion',encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                </h2>
+                                                <small class="text-muted">
+                                                    autor: {{encuesta.user_id}}
+                                                </small>
+                                            </div>
+                                        
+                                        </article>
+                                        {% endfor %}
+                                        
+                                        {% endif %}
+                                    </div>  
+                                </div>                                  
+                    </div>
                             
                             
                         </div>

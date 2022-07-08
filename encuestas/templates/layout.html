@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
+    <link rel="icon" href ="{{ url_for('static', filename='completed-task.png') }}"
 
     <!-- Para destacar las respuestas hechas por un encuestado -->
     <style type='text/css'>
@@ -26,14 +27,16 @@
     <title>Encuestas - {{ title }}</title>
     {% else %}
     <title>Encuestas</title>
+
     {% endif %}
+  
     <!-- <link rel="manifest" href="manifest.webmanifest" /> -->
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap"
           rel="stylesheet" />
-    {%block scripts%} {%endblock%}
+    {%block scripts%} {%endblock scripts%}
 </head>
-<body>
+<body class="d-flex flex-column gap-4">
     <header class="site-header">
       <nav class="navbar navbar-expand-lg bg-white navbar-light bg-white fixed-top ">
         <div class="container">
@@ -44,12 +47,21 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               
-              {% if current_user.is_authenticated and current_user.tipo =='1' %}
-              <a class="nav-item text-secondary nav-link" href="{{ url_for('crear_encuesta')}}">Crear Encuesta</a>
-              {% endif %}
+           
             </div>
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
+              {%block change_button%}
+              {% if current_user.is_authenticated and current_user.tipo =='1' %}
+               <a class="nav-item text-white nav-link btn primary-button brand-color d-flex align-items-center gap-3" href="{{ url_for('crear_encuesta')}}">
+                  <ion-icon class = "aligm-middle"name="add-outline"></ion-icon>
+                  <span>
+                    Crear Encuesta
+                  </span>
+              </a>
+              {% endif %}
+              {%endblock change_button%}
+             
               {% if current_user.is_authenticated %}
               <a class="nav-item text-secondary nav-link  btn-link px-3 me-2" href="{{ url_for('profile') }}">Perfil</a>
                

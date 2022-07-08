@@ -74,4 +74,11 @@ class CrearEncuestaForm(FlaskForm):
     submit = SubmitField('Guardar Título')
 
 class EnviarRespuestaForm(FlaskForm):
-    submit = SubmitField('Enviar Respuesta')
+    like = SubmitField('Me ha gustado')
+    dislike = SubmitField('No me ha gustado')
+    normal = SubmitField('Omitir opinión')
+
+#esto era una forma que se me había ocurrido antes, no lo quiero borrar por si acaso
+class PublicarEncuestaForm(FlaskForm):
+    submit = SubmitField('Enviar Respuesta')  
+    now = BooleanField('Publicar Ahora')

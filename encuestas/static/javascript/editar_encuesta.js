@@ -1,9 +1,52 @@
+console.log(document.querySelectorAll(".dropdown-toggle"));
+console.log("hola");
+// document.querySelectorAll(".dropdown-toggle").forEach((encuesta) => {
+//   encuesta.addEventListener("blur", async function () {
+//     console.log("has dejado el campo categoría " + encuesta.value);
+//     console.log("el encuesta id: ", encuesta.id.split("encuesta_c")[1]);
+//     var dataReply_updt_item = await update_cat(
+//       encuesta.id.split("encuesta_c")[1],
+//       encuesta.value
+//     );
+//   });
+// });
+console.log(document.querySelectorAll(".dropdown-toggle"));
+console.log("hola");
+document.querySelectorAll(".dropdown-toggle").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log("has dejado el campo categoría " + encuesta.value);
+    console.log("el encuesta id: ", encuesta.id.split("encuesta_c")[1]);
+    var dataReply_updt_item = await update_cat(
+      encuesta.id.split("encuesta_c")[1],
+      encuesta.value
+    );
+  });
+});
+
+async function update_cat(encuesta_id, categoria) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_categoria_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      categoria: categoria,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+
 /********************************************************************/
 /*                      Funciones Iniciales                         */
 /********************************************************************/
 // Añaden funcionalidad a la edición del
 //título de la encuesta,preguntas y
 //descripción de los items cuando estos son renderizados por primera vez
+
 document.querySelectorAll(".title-encuesta").forEach((encuesta) => {
   encuesta.addEventListener("blur", async function () {
     console.log(
@@ -69,6 +112,32 @@ document.querySelectorAll(".image_of_encuesta").forEach((item) => {
     var dataReply_updt_item = await update_image_encuesta(
       item.id.split("image_of_encuesta_")[1],
       formData
+    );
+  });
+});
+document.querySelectorAll(".posttime-encuesta").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log(
+      "has dejado el campo editar posttime encuesta: " + encuesta.value
+    );
+    console.log("el encuesta id: ", encuesta.id.split("post_time_")[1]);
+    var dataReply_updt_item = await update_post_time(
+      encuesta.id.split("post_time_")[1],
+      encuesta.value
+    );
+  });
+});
+
+document.querySelectorAll(".closingdate-encuesta").forEach((encuesta) => {
+  encuesta.addEventListener("blur", async function () {
+    console.log(
+      "has dejado el campo editar closingdate encuesta: " + encuesta.value
+    );
+    console.log("el encuesta id: ", encuesta.id);
+    //console.log("el encuesta id: ", encuesta.id.split("closing_date_")[1]);
+    var dataReply_updt_item = await update_closing_date(
+      encuesta.id.split("closing_date_")[1],
+      encuesta.value
     );
   });
 });
@@ -186,6 +255,40 @@ async function update_item(item_id, description) {
   console.log(dataReply);
   return dataReply;
 }
+async function update_post_time(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_post_time_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      description: description,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+
+async function update_closing_date(encuesta_id, description) {
+  // NOTAR EL AWAIT: significa que espera hasta que se complete la request antes de seguir con el código
+  // Toma el id de la encuesta y lo actualiza
+  // LUEGO; ir a la DOM y cambiar el objeto
+  var dataReply = await request({
+    method: "POST",
+    url: "/update_closing_date_test",
+    headers: ["Content-type", "application/x-www-form-urlencoded"],
+    body: JSON.stringify({
+      description: description,
+      encuesta_id: encuesta_id,
+    }),
+  });
+  console.log(dataReply);
+  return dataReply;
+}
+
 /*********************************************************************/
 /*                        Eliminación de campos                  */
 /********************************************************************/
@@ -373,7 +476,7 @@ async function add_pregunta(encuesta_id) {
   div_content_section.appendChild(button);
 
   div_container.appendChild(div_content_section);
-  var content = document.getElementById("content-section");
+  var content = document.getElementById("encuesta-container");
   // 7) Creando parte derecha: esto fue más rápido porque decubrí que se puede copiar y pegar
   //    Esto reemplaza al menu porque se puede insertar solo directamente y no delgarlo a una variable
   //    (i.e no se puede hacer insertAdjHTML("beforeend", menu_options))
@@ -383,8 +486,19 @@ async function add_pregunta(encuesta_id) {
   <ion-icon  onclick="delete_pregunta(${dataReply.id}, ${encuesta_id})" name = "trash"></ion-icon>
 </div>
 <div class="h-50 p-3 d-flex  align-items-center">
-<ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
+
 </div></div>`
   );
   content.insertBefore(div_container, add_pregunta_button);
+}
+
+//Función que revisa cada un minuto para publicar
+async function verificar_datetime(encuesta_closing_date){
+  var date = new Date();
+  if(date > encuesta_closing_date){
+    alert("Encuesta Cerrada");
+  }
+  else{
+    setTimeout(verificar_datetime, 30000);
+  }
 }

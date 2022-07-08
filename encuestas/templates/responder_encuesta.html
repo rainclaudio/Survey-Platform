@@ -3,34 +3,80 @@
 {% block content %}
 <!-- Título -->
 <h2 class="border-bottom mb-4">
-  Responder {{ encuesta.title}}
+    Responder {{ encuesta.title}}
 </h2>
 
 <!-- Preguntas -->
 <div class="content-section ml-4">
-  <form method="POST" action="">
-    {{ respuesta_form.hidden_tag() }}
-    <div class = "form-group">
-      {%for pregunta in preguntas%}
-      <fieldset class="form-group">
-        <legend class="border-bottom">
-          {{pregunta.title}}
-        </legend>
-      </fieldset>
-        <ul>
-          {%for item in items%}
-          {%if pregunta.id == item.pregunta_id%}
-          <li style = "list-style-type: none;">
-            <input type="radio" name='{{pregunta.id}}' value = "{{item.id}}">
-              {{item.description}}
-            </input<br>
-          </li>
-          {%endif%}
-          {%endfor%}
-        </ul>
-      {%endfor%}
-      {{ respuesta_form.submit(class="btn btn-outline-info") }}
-    </div>
-  </form>
+    <form method="POST" action="">
+        {{ respuesta_form.hidden_tag() }}
+        <div class="form-group">
+            {%for pregunta in preguntas%}
+            <fieldset class="form-group">
+                <legend class="border-bottom">
+                    {{pregunta.title}}
+                </legend>
+            </fieldset>
+            <ul>
+                {%for item in items%}
+                {%if pregunta.id == item.pregunta_id%}
+                <li style="list-style-type: none;">
+                    <input type="radio" name='{{pregunta.id}}' value="{{item.id}}">
+                    {{item.description}}
+                    </input<br>
+                </li>
+                {%endif%}
+                {%endfor%}
+            </ul>
+
+
+
+            {%endfor%}
+
+            <!--boton que llama al modal-->
+
+
+            <button type="button"
+                    class="btn btn-outline-info"
+                    data-toggle="modal"
+                    data-target="#likeModal">
+                Enviar Respuesta
+            </button>
+
+
+            <!--Modal-->
+            <div class="modal fade"
+                 id="likeModal"
+                 tabindex="-1"
+                 role="dialog"
+                 aria-labelledby="deleteModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">
+                                Desea dar su opinion sobre la encuesta?
+                            </h5>
+                            <button type="button"
+                                    class="close"
+                                    data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            {{ respuesta_form.like(class="btn btn-success")}}
+                            {{ respuesta_form.dislike(class="btn btn-outline-danger")}}
+                            {{ respuesta_form.normal(class="btn btn-secondary")}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Aun dentro de la form-->
+
+        </div>
+    </form>
 </div>
+
 {% endblock content %}

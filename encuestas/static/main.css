@@ -1,9 +1,9 @@
 body {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  background: #fafafa;
+  background: #f5f5f5;
   color: #333;
-  margin-top: 5rem;
+  margin-top: 3.4rem;
   box-sizing: border-box;
 }
 html {
@@ -34,7 +34,8 @@ h6 {
 }
 
 .container {
-  max-width: 70%;
+  max-width: 1200px;
+  width: 1200px;
 }
 
 .content-section {
@@ -90,9 +91,15 @@ a.article-title:hover {
 .color-primary {
   color: #006fff;
 }
+.text-indigo {
+  color: #a85cf9;
+}
 /*
 GAPS
 */
+.gap-big {
+  gap: 1.2rem;
+}
 .gap-9 {
   gap: 0.9rem;
 }
@@ -126,6 +133,9 @@ GAPS
 .w-85 {
   width: 90%;
 }
+.w-100 {
+  width: 100%;
+}
 .title-encuesta {
   outline: none;
   border-bottom: 0;
@@ -138,6 +148,10 @@ GAPS
 .title-encuesta:hover {
   outline: none;
   border-bottom: 1px solid #444;
+}
+.description-encuesta {
+  border-bottom: 0;
+  transition: border-bottom 0.1s linear;
 }
 .pregunta-encuesta {
   font-size: 1.5rem;
@@ -177,24 +191,9 @@ body {
   height: 100%;
 }
 
-body {
-  background: linear-gradient(-45deg, #ffffff, #cdd3d3, #ffffff);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+.overflow-auto {
+  overflow: auto;
 }
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
 .new-nav-style {
   background: rgb(255, 255, 252);
   border-radius: 0.85rem;
@@ -304,7 +303,7 @@ body {
   left: 0px;
   top: 0px;
   width: 257px;
-  height: 209px;
+  /* height: 209px; */
 }
 /****
 */
@@ -312,7 +311,7 @@ body {
   font-size: 1.6875rem;
 }
 .description-container {
-  min-width: 40rem;
+  /* min-width: 40rem; */
 }
 .font-description {
   font-size: 0.875rem;
@@ -322,21 +321,26 @@ body {
 /*
 BUTTONS
 */
-
-.primary-button {
-  border: none;
+.brand-color {
   background-color: #006fff;
-  color: white;
+}
+.answer-button-size {
   width: 10rem;
   height: 2rem;
+}
+.primary-button {
+  border: none;
+  color: white;
+
   font-size: 1rem;
   border-radius: 3px;
 }
+
 .primary-button:hover {
   color: white;
 }
 .home-width {
-  min-width: 65rem !important;
+  /* min-width: 65rem !important; */
 }
 
 #canvasContainer {
@@ -364,4 +368,8 @@ BUTTONS
 #chart-title {
   width: 50%;
   float: left;
+}
+.btn:focus {
+  outline: none !important;
+  box-shadow: none;
 }

@@ -15,7 +15,7 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
 
 
-<div class="container emp-profile">
+<div class="container emp-profile border">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -152,6 +152,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#close" role="tab" aria-controls="close" aria-selected="false">Encuestas cerradas</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="list-tab" data-toggle="tab" href="#lists" role="tab" aria-controls="lists" aria-selected="false">Mis listas</a>
+                            </li>
                         </ul>
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show " id="open" role="tabpanel" aria-labelledby="open-tab">
@@ -163,17 +166,46 @@
                                                 <div class="media-body">
                                                     <div class="article-metadata">
                                                         <small class="text-muted">
-                                                            created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
+                                                            Fecha de creación: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}&nbsp;&nbsp;&nbsp;&nbsp;
                                                         </small>
                                                         <small class="text-muted">
-                                                            estado: {{encuesta.estado}}
+                                                            Estado: {{encuesta.estado}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        </small>
+                                                        <small class="text-muted">
+                                                            Fecha de cierre: {{encuesta.closing_date.strftime('%d-%m-%Y %H:%M')}}
                                                         </small>
                                                     </div>
                                                         <h2>
                                                             <a class="article-title"
-                                                            href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                            href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"
+                                                           > <h3>{{ encuesta.title }} </h3></a>
                                                         </h2>
-                                                        <small class="text-muted">
+                                                       
+                                                        <div class="">
+                                                            <p class="font-description">{{encuesta.description}}</p>
+                                                        </div>
+                                                        <div class="d-flex gap-4 align-items-center">
+                                                            <div>
+                                                                {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                                    <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                {%endif%}
+                                                                {%if encuesta.categoria == "Autos, Motos y Otros"%}
+                                                                    <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                {%endif%}
+                                                                {%if encuesta.categoria == "Vestuario"%}
+                                                                    <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                {%endif%}
+                                                                {%if encuesta.categoria == "Gastronomía"%}
+                                                                    <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                {%endif%}
+                                                                {%if encuesta.categoria == "Electrónica"%}
+                                                                    <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
+                                                                {%endif%}
+                                                                <small class="text-muted "> {{  encuesta.categoria }}</small>
+                                                                <br> 
+                                                            </div>
+
+                                                        <small hidden class="text-muted ">
                                                             autor: {{encuesta.user_id}}
                                                         </small>
                                                     </div>
@@ -192,17 +224,46 @@
                                         <div class="media-body">
                                             <div class="article-metadata">
                                                 <small class="text-muted">
-                                                    created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
+                                                    Fecha de creación: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}&nbsp;&nbsp;&nbsp;&nbsp;
                                                 </small>
                                                 <small class="text-muted">
-                                                    estado: {{encuesta.estado}}
+                                                    Estado: {{encuesta.estado}}&nbsp;&nbsp;&nbsp;&nbsp;
                                                 </small>
                                             </div>
                                                 <h2>
                                                     <a class="article-title"
-                                                    href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
+                                                    href="{{ url_for('resultados_encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
                                                 </h2>
-                                                <small class="text-muted">
+                                                <div class="">
+                                                    <p class="font-description">{{encuesta.description}}</p>
+                                                </div>
+                                                <div class="d-flex gap-4 align-items-center">
+                                                     
+                                                      
+                                                         
+                                                        <div  >
+                                                            {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                                <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Autos, Motos y Otros"%}
+                                                                <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Vestuario"%}
+                                                                <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Gastronomía"%}
+                                                                <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Electrónica"%}
+                                                                <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            <small class="text-muted "> {{  encuesta.categoria }}</small>
+                                                            <br> 
+                                                        
+                                                        
+                                                    </div>
+
+                                                <small hidden class="text-muted ">
                                                     autor: {{encuesta.user_id}}
                                                 </small>
                                             </div>
@@ -221,17 +282,53 @@
                                         <div class="media-body">
                                             <div class="article-metadata">
                                                 <small class="text-muted">
-                                                    created at: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}
+                                                    Fecha de creación: {{encuesta.date_created.strftime('%d-%m-%Y %H:%M')}}&nbsp;&nbsp;&nbsp;&nbsp;
                                                 </small>
                                                 <small class="text-muted">
-                                                    estado: {{encuesta.estado}}
+                                                    Estado: {{encuesta.estado}}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                </small>
+                                                <small class="text-muted">
+                                                    Fecha de cierre: {{encuesta.closing_date.strftime('%d-%m-%Y %H:%M')}}
                                                 </small>
                                             </div>
                                                 <h2>
                                                     <a class="article-title"
                                                     href="{{ url_for('encuesta', encuesta_id=encuesta.id)}}"> <h3>{{ encuesta.title }} </h3></a>
                                                 </h2>
-                                                <small class="text-muted">
+                                                <div class="">
+                                                    <p class="font-description">{{encuesta.description}}</p>
+                                                </div>
+                                                <div class="d-flex gap-4 align-items-center">
+                                                     
+                                                      
+                                                         
+                                                        <div  >
+                                                            {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                                <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Autos, Motos y Otros"%}
+                                                                <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Vestuario"%}
+                                                                <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Gastronomía"%}
+                                                                <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Electrónica"%}
+                                                                <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
+                                                            {%endif%}
+                                                            {%if encuesta.categoria == "Categoría"%}
+                                                                <img src="/static/icons/cate.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                <small class="text-muted ">Sin</small>
+                                                            {%endif%}
+                                                            <small class="text-muted "> {{  encuesta.categoria }}</small>
+                                                            <br> 
+                                                        
+                                                        
+                                                    </div>
+
+                                                <small hidden class="text-muted ">
                                                     autor: {{encuesta.user_id}}
                                                 </small>
                                             </div>
@@ -240,6 +337,30 @@
                                         {% endfor %}
                                     </div>  
                                 </div>                                  
+                            </div>  
+                            
+                            <div class="tab-pane fade" id="lists" role="tabpanel" aria-labelledby="list-tab">
+                                <div class="column">
+                                    <div class="row-md-8">
+                                        <a class="btn btn-outline-success mb-4" href="{{ url_for('crear_lista_difusion') }}">+ Nueva lista</a>
+                                        {%for lista in listas%}
+                                       
+                                        <div class=" border content-section">
+
+                                              
+                                                    <h2>
+                                                        <a class="article-title text-indigo"
+                                                        href="{{ url_for('editar_lista', lista_id=lista.id)}}"> <h3>{{ lista.title }} </h3></a>
+                                                    </h2>
+                                                    <div class="">
+                                                        <p class="text-muted">{{lista.description}}</p>
+                                        </div>
+                 
+                                                </div>
+                                                {%endfor%}
+                                            </div>
+                                </div>  
+                            </div>                                  
                             </div>  
                         </div>
                     </div>

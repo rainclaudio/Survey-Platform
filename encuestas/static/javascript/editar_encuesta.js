@@ -493,12 +493,11 @@ async function add_pregunta(encuesta_id) {
 }
 
 //Función que revisa cada un minuto para publicar
-async function verificar_datetime(encuesta_closing_date){
+async function verificar_datetime(encuesta_closing_date) {
   var date = new Date();
-  if(date > encuesta_closing_date){
+  if (date > encuesta_closing_date) {
     alert("Encuesta Cerrada");
-  }
-  else{
+  } else {
     setTimeout(verificar_datetime, 30000);
   }
 }

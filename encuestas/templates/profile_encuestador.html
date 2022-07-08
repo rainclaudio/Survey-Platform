@@ -185,24 +185,29 @@
                                                             <p class="font-description">{{encuesta.description}}</p>
                                                         </div>
                                                         <div class="d-flex gap-4 align-items-center">
-                                                            <div>
-                                                                {%if encuesta.categoria == "Deportes y Fitness"%}
-                                                                    <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                                {%endif%}
-                                                                {%if encuesta.categoria == "Autos, Motos y Otros"%}
-                                                                    <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                                {%endif%}
-                                                                {%if encuesta.categoria == "Vestuario"%}
-                                                                    <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                                {%endif%}
-                                                                {%if encuesta.categoria == "Gastronomía"%}
-                                                                    <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                                {%endif%}
-                                                                {%if encuesta.categoria == "Electrónica"%}
-                                                                    <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
-                                                                {%endif%}
-                                                                <small class="text-muted "> {{  encuesta.categoria }}</small>
-                                                                <br> 
+                                                             
+                                                              
+                                                                 
+                                                                <div  >
+                                                                    {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                                        <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                    {%endif%}
+                                                                    {%if encuesta.categoria == "Autos, Motos y Otros"%}
+                                                                        <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                    {%endif%}
+                                                                    {%if encuesta.categoria == "Vestuario"%}
+                                                                        <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                    {%endif%}
+                                                                    {%if encuesta.categoria == "Gastronomía"%}
+                                                                        <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
+                                                                    {%endif%}
+                                                                    {%if encuesta.categoria == "Electrónica"%}
+                                                                        <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
+                                                                    {%endif%}
+                                                                    <small class="text-muted "> {{  encuesta.categoria }}</small>
+                                                                    <br> 
+                                                                
+                                                                
                                                             </div>
 
                                                         <small hidden class="text-muted ">

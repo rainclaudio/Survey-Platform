@@ -15,6 +15,14 @@
 {%endblock scripts%} {%block change_button%} {%if encuesta.estado
 =="publicada"%}
 
+<button
+  type="button"
+  class="btn btn-danger btn-sm m-1"
+  data-toggle="modal"
+  data-target="#deleteModal"
+>
+  Cerrar encuesta
+</button>
 {%endif%} {%if encuesta.estado == "creada"%}
 <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
@@ -138,18 +146,44 @@
 
         {%endif%}
       </div>
+    </div>
+  </div>
 
-      <div class="content-section p-0 d-flex flex-column">
-        <div class="h-100 p-3 d-flex align-items-center border-left">
-          <ion-icon
-            onclick="delete_pregunta('{{pregunta.id}}', '{{encuesta.id}}')"
-            name="trash"
-          ></ion-icon>
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="deleteModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="deleteModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">
+            Desea cerrar la encuesta # {{ encuesta.id }}?
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
-        <!-- <div class="h-50 p-3 d-flex  align-items-center">
-          <ion-icon class onclick="" name = "color-wand-outline"></ion-icon>
-        </div> -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Cancelar
+          </button>
+          <form
+            action="{{ url_for('cerrar_encuesta', encuesta_id=encuesta.id) }}"
+            method="POST"
+          >
+            <input class="btn btn-danger" type="submit" value="Confirmar" />
+          </form>
+        </div>
       </div>
     </div>
     {%endfor%} {%if encuesta.estado == "creada"%}
@@ -241,6 +275,7 @@
   <div class="card card-body">
     Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
   </div>
+  {% endblock content %}
 </div>
       <h4 class="mt-2 mb-0">Añadir</h4>
       <div
@@ -311,26 +346,75 @@
         </div>
         {% endfor%}
       </div>
-      <div class = "row content-section" style="background-color:rgba(78, 98, 160, 0.071)">
-        Actualizar fecha de cierre:
-        <input
-          class = "closingdate-encuesta"
-          id = "closing_date_{{encuesta.id}}"
-          type = "datetime-local"
-          onclick = "verificar_datetime('{{encuesta.closing_date|safe}}')"
-          value = "{{encuesta.closing_date}}"
-        />
-        <button
-           type="button"
-           class="btn btn-danger btn-sm m-1"
-           data-toggle="modal"
-           data-target="#deleteModal"
-         >Cerrar Ahora
-        </button>
-      </div>
     </div>
   </div>
 
+  <!-- ///////////////////////////////////////////////////////////////Nuevo//////////////////////// -->
+  <!-- <label for="posttime">Cuando?</label>
+<input
+  type="datetime-local"
+  id="post_time_{{encuesta.date_posted}}"
+  value="{{encuesta.date_posted}}"
+/>
+calendario y fechas -->
+
+  <!--checkbox para publicar ahora-->
+  <!-- <label for="check">Publicar ahora</label>
+<input
+  type="checkbox"
+  id="check"
+  name="check"
+  value="yes"
+  ,
+  onclick="hide();"
+  checked
+/> -->
+  <!-- 
+<!--script para ocultar el boton y (en teoría) actualizar la fecha de publicación-->
+  <!-- <script>
+  const btn = document.querySelector("#btn");
+  var hidden = false;
+  function hide() {
+    hidden = !hidden;
+    if (hidden) {
+      document.getElementById("pub_button").style.visibility = "hidden";
+    } else {
+      document.getElementById("pub_button").style.visibility = "visible";
+    }
+  }
+  btn.addEventListener("click", (event) => {
+    let checkboxes = document.querySelectorAll('input[name="check"]:checked');
+    let values = [];
+    checkboxes.forEach((checkbox) => {
+      values.push(checkbox.value);
+    });
+    if (values == "yes") {
+      //aquí debería cambiarse
+      var date = new Date();
+      hora = date.getHours();
+      minutos = date.getMinutes();
+    } else {
+      hora = encuesta.date_posted.getHours();
+      minutos = encuesta.date_posted.getMinutes();
+    }
+  });
+</script> -->
+  <!--botón de publicación-->
+  {%if encuesta.estado == "creada"%}
+  <!-- <form
+  action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
+  method="POST"
+>
+  <input
+    id="pub_button"
+    class="btn btn-success"
+    type="submit"
+    value="Publicar encuesta # {{ encuesta.id }}"
+  />
+</form> -->
+  {%endif%}
+
+  <!-- ///////////////////////////////////////////////////////////////Fin de lo Nuevo//////////////////////// -->
   <!-- Modal -->
   <div
     class="modal fade"

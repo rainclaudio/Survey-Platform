@@ -500,6 +500,16 @@ def update_description_test():
     reply = {"status":"success","id": encuesta.id, "description" : encuesta.description}
     return jsonify(reply)
 
+@app.route('/update_closing_date_test',methods=['POST'])
+def update_closing_date_test():
+    # obtener la data que se ha recibido
+    dataGet = request.get_json(force=True)
+    encuesta = Encuesta.query.get_or_404(dataGet['encuesta_id'])
+    encuesta.closing_date = datetime.fromisoformat(dataGet['description'])
+    db.session.commit()
+    # Respuesta
+    reply = {"status":"success","id": encuesta.id, "description" : encuesta.closing_date}
+    return jsonify(reply)
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)

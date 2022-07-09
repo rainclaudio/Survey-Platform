@@ -15,14 +15,7 @@
 {%endblock scripts%} {%block change_button%} {%if encuesta.estado
 =="publicada"%}
 
-<button
-  type="button"
-  class="btn btn-danger btn-sm m-1"
-  data-toggle="modal"
-  data-target="#deleteModal"
->
-  Cerrar encuesta
-</button>
+
 {%endif%} {%if encuesta.estado == "creada"%}
 <form
   action="{{ url_for('publicar_encuesta', encuesta_id=encuesta.id, total_pregs = total_pregs, bool_items = bool_items) }}"
@@ -318,6 +311,23 @@
           </div>
         </div>
         {% endfor%}
+      </div>
+      <div class = "row content-section" style="background-color:rgba(78, 98, 160, 0.071)">
+        Actualizar fecha de cierre:
+        <input
+          class = "closingdate-encuesta"
+          id = "closing_date_{{encuesta.id}}"
+          type = "datetime-local"
+          onclick = "verificar_datetime('{{encuesta.closing_date|safe}}')"
+          value = "{{encuesta.closing_date}}"
+        />
+        <button
+           type="button"
+           class="btn btn-danger btn-sm m-1"
+           data-toggle="modal"
+           data-target="#deleteModal"
+         >Cerrar Ahora
+        </button>
       </div>
     </div>
   </div>

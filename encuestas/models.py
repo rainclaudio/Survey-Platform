@@ -47,6 +47,7 @@ class Encuesta(db.Model):
     categoria = db.Column(db.String(100),default = "Categoría" , nullable=False)
     likes = db.Column(db.Integer, default = 0, nullable = False)
     dislikes = db.Column(db.Integer, default = 0, nullable = False)
+    closing_date = db.Column(db.DateTime, default = datetime(2050,6,18,0,0,0))
 
 class Pregunta(db.Model):
     id = db.Column(db.Integer, primary_key = True)

@@ -509,7 +509,7 @@ def cerrar_encuesta(encuesta_id):
     encuesta = Encuesta.query.get_or_404(encuesta_id)
     encuesta.estado = "cerrada"
     db.session.commit()
-    flash('Your post #' + str(encuesta_id) + ' has been closed!', 'success')
+    flash('Your survey #' + str(encuesta_id) + ' has been closed!', 'success')
     return redirect(url_for('home'))
 
 

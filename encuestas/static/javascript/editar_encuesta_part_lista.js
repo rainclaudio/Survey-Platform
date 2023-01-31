@@ -54,39 +54,48 @@ async function get_and_send_request(encuesta_id, list_Node_HTML) {
       encuesta_id: encuesta_id,
       name: info_user.name,
       email: info_user.email,
-      iamge_file: info_user.image_file,
+      image_file: info_user.image_file,
     }),
   });
 }
 
-async function remove_user(invited_user, encuesta_id) {
-  console.log(invited_user);
-  var invited_user_li = document.getElementById(`invited-user-${invited_user}`);
+async function remove_user(user_id, encuesta_id) {
+  console.log(user_id);
+  var invited_user_li = document.getElementById(`invited-user-${user_id}`);
   invited_user_li.remove();
 
   var dataReply = await request({
     method: "POST",
-    url: "/delete_user_in_list",
+    url: "/delete_user_of_encuesta",
     headers: ["Content-type", "application/x-www-form-urlencoded"],
     body: JSON.stringify({
       somedata: "data",
+      user_id: user_id,
       encuesta_id: encuesta_id,
-      invited_user: invited_user,
     }),
   });
 }
 
 function add_users(encuesta_id, users_list, lista_id) {
   var users_to_invite = users_list.getElementsByTagName("li");
-  var users_already_invited = document
-    .getElementById("users-invited")
-    .getElementsByTagName("li");
+  var users_already_invited;
+  if (document.getElementById("users-invited") == null) {
+    console.log(document.getElementById("users-invited"));
+  } else {
+    users_already_invited = document
+      .getElementById("users-invited")
+      .getElementsByTagName("li");
+  }
+
+  console.log(users_already_invited);
   // get ids de usuarios ya invitados
   var invited_user_ids = [];
-  for (var i = 0; i < users_already_invited.length; ++i) {
-    var invited_user_id =
-      +users_already_invited[i].id.split("invited-user-")[1];
-    invited_user_ids.push(invited_user_id);
+  if (users_already_invited != null) {
+    for (var i = 0; i < users_already_invited.length; ++i) {
+      var invited_user_id =
+        +users_already_invited[i].id.split("invited-user-")[1];
+      invited_user_ids.push(invited_user_id);
+    }
   }
   // agregar a usuarios que aun no han sido invitados
   for (var i = 0; i < users_to_invite.length; ++i) {
@@ -126,13 +135,17 @@ function add_users(encuesta_id, users_list, lista_id) {
       );
       // var new_invited = users_to_invite[i];
       // new_invited.id = "invited-user-" + user_to_invite;
-      document.getElementById("users-invited").appendChild(createLi);
+      console.log("es nulo");
+      if (users_already_invited != null) {
+        document.getElementById("users-invited").appendChild(createLi);
+      }
     }
   }
 }
 
 function add_list_to_invited(encuesta_id, lista_id) {
   users_list = document.getElementById(`users-of-${lista_id}`);
-
-  users = add_users(encuesta_id, users_list, lista_id);
+  if (users_list != null) {
+    users = add_users(encuesta_id, users_list, lista_id);
+  }
 }

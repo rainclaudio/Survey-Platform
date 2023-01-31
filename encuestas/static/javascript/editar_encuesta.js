@@ -444,7 +444,7 @@ async function add_pregunta(encuesta_id) {
   div_content_section.appendChild(button);
 
   div_container.appendChild(div_content_section);
-  var content = document.getElementById("content-section");
+  var content = document.getElementById("encuesta-container");
   // 7) Creando parte derecha: esto fue más rápido porque decubrí que se puede copiar y pegar
   //    Esto reemplaza al menu porque se puede insertar solo directamente y no delgarlo a una variable
   //    (i.e no se puede hacer insertAdjHTML("beforeend", menu_options))

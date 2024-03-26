@@ -171,9 +171,7 @@
                                                         <small class="text-muted">
                                                             Estado: {{encuesta.estado}}&nbsp;&nbsp;&nbsp;&nbsp;
                                                         </small>
-                                                        <small class="text-muted">
-                                                            Fecha de cierre: {{encuesta.closing_date.strftime('%d-%m-%Y %H:%M')}}
-                                                        </small>
+                                                
                                                     </div>
                                                         <h2>
                                                             <a class="article-title"
@@ -189,19 +187,17 @@
                                                               
                                                                  
                                                                 <div  >
-                                                                    {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                                    {%if encuesta.categoria == "Fitness"%}
                                                                         <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
                                                                     {%endif%}
-                                                                    {%if encuesta.categoria == "Autos, Motos y Otros"%}
-                                                                        <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                                    {%endif%}
-                                                                    {%if encuesta.categoria == "Vestuario"%}
+                                                             
+                                                                    {%if encuesta.categoria == "Medio Ambiente"%}
                                                                         <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
                                                                     {%endif%}
-                                                                    {%if encuesta.categoria == "Gastronomía"%}
+                                                                    {%if encuesta.categoria == "Salud y Bienestar"%}
                                                                         <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
                                                                     {%endif%}
-                                                                    {%if encuesta.categoria == "Electrónica"%}
+                                                                    {%if encuesta.categoria == "Mobilidad"%}
                                                                         <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
                                                                     {%endif%}
                                                                     <small class="text-muted "> {{  encuesta.categoria }}</small>
@@ -247,19 +243,17 @@
                                                       
                                                          
                                                         <div  >
-                                                            {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                            {%if encuesta.categoria == "Fitness"%}
                                                                 <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Autos, Motos y Otros"%}
-                                                                <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                            {%endif%}
-                                                            {%if encuesta.categoria == "Vestuario"%}
+                                                       
+                                                            {%if encuesta.categoria == "Medio Ambiente"%}
                                                                 <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Gastronomía"%}
+                                                            {%if encuesta.categoria == "Salud y Bienestar"%}
                                                                 <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Electrónica"%}
+                                                            {%if encuesta.categoria == "Mobilidad"%}
                                                                 <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
                                                             {%endif%}
                                                             <small class="text-muted "> {{  encuesta.categoria }}</small>
@@ -308,19 +302,16 @@
                                                       
                                                          
                                                         <div  >
-                                                            {%if encuesta.categoria == "Deportes y Fitness"%}
+                                                            {%if encuesta.categoria == "Fitness"%}
                                                                 <img src="/static/icons/sport.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Autos, Motos y Otros"%}
-                                                                <img src="/static/icons/car.png" style="width: 15%; height: 15%"  alt="img"/>
-                                                            {%endif%}
-                                                            {%if encuesta.categoria == "Vestuario"%}
+                                                            {%if encuesta.categoria == "Medio Ambiente"%}
                                                                 <img src="/static/icons/ropa.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Gastronomía"%}
+                                                            {%if encuesta.categoria == "Salud y Bienestar"%}
                                                                 <img src="/static/icons/food.png" style="width: 15%; height: 15%"  alt="img"/>
                                                             {%endif%}
-                                                            {%if encuesta.categoria == "Electrónica"%}
+                                                            {%if encuesta.categoria == "Mobilidad"%}
                                                                 <img src="/static/icons/pc.png" style="width: 18%; height: 15%"  alt="img"/>
                                                             {%endif%}
                                                             {%if encuesta.categoria == "Categoría"%}

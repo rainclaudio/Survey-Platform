@@ -7,6 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
@@ -40,7 +41,7 @@
     <header class="site-header">
       <nav class="navbar navbar-expand-lg bg-white navbar-light bg-white fixed-top ">
         <div class="container">
-          <a class="navbar-brand mr-4 " href="/">Encuestas</a>
+          <a class="navbar-brand mr-4 " href="/">ENCUESTAS</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -54,7 +55,6 @@
               {%block change_button%}
               {% if current_user.is_authenticated and current_user.tipo =='1' %}
                <a class="nav-item text-white nav-link btn primary-button brand-color d-flex align-items-center gap-3" href="{{ url_for('crear_encuesta')}}">
-                  <ion-icon class = "aligm-middle"name="add-outline"></ion-icon>
                   <span>
                     Crear Encuesta
                   </span>
